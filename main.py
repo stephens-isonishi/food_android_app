@@ -1,4 +1,4 @@
-import model
+from keras.models import model
 from keras.optimizers import SGD
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
