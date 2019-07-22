@@ -20,8 +20,10 @@ def main():
     print(sn.summary)
 
     #training
-    training_dir = '../training_data/'
-    validation_dir = '../testing_data/'
+    training_dir = 'kw_resources/food/training_data/'
+   # training_dir = "../training_data/"
+    validation_dir = 'kw_resources/food/testing_data/'
+   # validation_dir = "../testing_data/"
     num_training = 166580  #use find . -type f | wc -l for each directory
     num_validation = 60990
     num_epochs = 10
@@ -46,7 +48,8 @@ def main():
         samples_per_epoch=num_training,
         validation_data=validation_data_generator,
         nb_val_samples=num_validation)
-
+    
+    sn.save_weights('kw_resources/food/results/weights.h5')
 
 if __name__ == '__main__':
     main()
