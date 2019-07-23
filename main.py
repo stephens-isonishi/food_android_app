@@ -1,4 +1,4 @@
-from keras.models import model
+import model
 from keras.optimizers import SGD
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
@@ -21,9 +21,9 @@ def main():
 
     #training
     training_dir = 'kw_resources/food/training_data/'
-   # training_dir = "../training_data/"
+    #training_dir = "../training_data/"
     validation_dir = 'kw_resources/food/testing_data/'
-   # validation_dir = "../testing_data/"
+    #validation_dir = "../testing_data/"
     num_training = 166580  #use find . -type f | wc -l for each directory
     num_validation = 60990
     num_epochs = 10
