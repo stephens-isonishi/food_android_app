@@ -42,13 +42,13 @@ def main():
     train_data = training_generator_parameters.flow_from_directory(
         training_dir,
         target_size=(width, height),
-        batch_size=32,
+        batch_size=64,
         class_mode='categorical')
 
     validation_data_generator = testing_generator_parameters.flow_from_directory(
         validation_dir,
         target_size=(width, height),
-        batch_size=32,
+        batch_size=64,
         class_mode='categorical')
 
     sn.fit_generator(
