@@ -45,11 +45,12 @@ def main():
 
     sn.fit_generator(
         train_data,
-        samples_per_epoch=num_training,
+        steps_per_epoch=num_training,
+        epochs = num_epochs,
         validation_data=validation_data_generator,
-        nb_val_samples=num_validation)
+        validation_steps=num_validation)
     
-    sn.save_weights('kw_resources/food/results/weights.h5')
+    sn.save_weights('/kw_resources/food/results/weights.h5')
 
 if __name__ == '__main__':
     main()
