@@ -1,8 +1,11 @@
 import model
 from keras.optimizers import SGD
+from keras.utils import multi_gpu_model 
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
 #from visual_callbacks import AccLossPlotter
+from tensorflow.python.client import device_lib
+
 import numpy as np
 
 def main():
@@ -11,6 +14,11 @@ def main():
     width, height = 224, 224
 
     sn = model.SqueezeNet(nb_classes=nb_class, inputs=(3, height, width))
+    local_devices = device_lib.list_local_devices()
+    num_gpus = len([dev.name for dev in local_devices if dev.device_type == 'GPU'])
+    print(num_gpus)
+    if(num_gpus >= 2):
+        sn = multi_gpu_model(sn, num_gpus)
     print('build model')
 
     #obviously mess around with the hyperparameters
