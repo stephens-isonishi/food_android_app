@@ -8,6 +8,8 @@ from tensorflow.python.client import device_lib
 
 import numpy as np
 
+BATCH_SIZE = 64
+
 def main():
     np.random.seed(45)
     nb_class = 451 #found by doing: echo */ | wc
@@ -42,22 +44,22 @@ def main():
     train_data = training_generator_parameters.flow_from_directory(
         training_dir,
         target_size=(width, height),
-        batch_size=64,
+        batch_size=BATCH_SIZE,
         class_mode='categorical')
 
     validation_data_generator = testing_generator_parameters.flow_from_directory(
         validation_dir,
         target_size=(width, height),
-        batch_size=64,
+        batch_size=BATCH_SIZE,
         class_mode='categorical')
 
     sn.fit_generator(
         train_data,
-        steps_per_epoch=num_training,
+        steps_per_epoch=(num_training // BATCH_SIZE),
         epochs = num_epochs,
         validation_data=validation_data_generator,
-        validation_steps=num_validation)
-    
+        validation_steps=(num_validation // BATCH_SIZE))
+
     sn.save_weights('/kw_resources/food/results/weights.h5')
 
 if __name__ == '__main__':
