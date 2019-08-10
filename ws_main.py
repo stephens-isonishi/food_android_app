@@ -7,13 +7,12 @@ from keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.client import device_lib
 
 import numpy as np
-import pickle
 import datetime
 import json
 
 
-BATCH_SIZE = 64
-NUM_EPOCHS = 1
+BATCH_SIZE = 256
+NUM_EPOCHS = 200
 
 def main():
     np.random.seed(45)
@@ -21,11 +20,11 @@ def main():
     width, height = 224, 224
 
     sn = model.SqueezeNet(nb_classes=nb_class, inputs=(3, height, width))
-    # local_devices = device_lib.list_local_devices()
-    # num_gpus = len([dev.name for dev in local_devices if dev.device_type == 'GPU'])
-    # print(num_gpus)
-    # if(num_gpus >= 2):
-    #     sn = multi_gpu_model(sn, num_gpus)
+    local_devices = device_lib.list_local_devices()
+    num_gpus = len([dev.name for dev in local_devices if dev.device_type == 'GPU'])
+    print(num_gpus)
+    if(num_gpus >= 2):
+        sn = multi_gpu_model(sn, num_gpus)
     print('build model')
 
     #obviously mess around with the hyperparameters
@@ -35,10 +34,10 @@ def main():
     print(sn.summary)
 
     #training
-    #training_dir = '/kw_resources/food/dataset/training_data/'
-    training_dir = "../training_data/"
-    #validation_dir = '/kw_resources/food/dataset/testing_data/'
-    validation_dir = "../testing_data/"
+    training_dir = '/kw_resources/food/dataset/training_data/'
+    #training_dir = "../training_data/"
+    validation_dir = '/kw_resources/food/dataset/testing_data/'
+    #validation_dir = "../testing_data/"
     num_training = 166580  #use find . -type f | wc -l for each directory
     num_validation = 60990
     num_epochs = NUM_EPOCHS
@@ -66,7 +65,7 @@ def main():
         validation_steps=(num_validation // BATCH_SIZE))
 
     history = sn
-    with open('../training_hist/{}.json'.format(datetime.now().strftime('%m-%d-%X')), 'w') as f:
+    with open('food/results/{}.json'.format(datetime.now().strftime('%m-%d-%X')), 'w') as f:
         json.dump(history.history, f)
 
     sn.save_weights('/kw_resources/food/results/weights.h5')
