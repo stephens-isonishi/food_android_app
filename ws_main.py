@@ -11,7 +11,7 @@ import datetime
 import json
 
 
-BATCH_SIZE = 256
+BATCH_SIZE = 512
 NUM_EPOCHS = 200
 
 def main():

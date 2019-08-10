@@ -42,7 +42,7 @@ def main(args):
     validation_dir = "../testing_data/"
     num_training = 166580  #use find . -type f | wc -l for each directory
     num_validation = 60990
-    num_epochs = int(args.num_epochs)
+    num_epochs = int(args.nb_epochs)
     bat_size = int(args.batch_size)
 
     #generation
