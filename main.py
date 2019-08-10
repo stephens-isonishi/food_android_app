@@ -10,12 +10,13 @@ import numpy as np
 import pickle
 import datetime
 import json
+import argparse
 
 
 BATCH_SIZE = 64
 NUM_EPOCHS = 1
 
-def main():
+def main(args):
     np.random.seed(45)
     nb_class = 451 #found by doing: echo */ | wc
     width, height = 224, 224
@@ -41,7 +42,8 @@ def main():
     validation_dir = "../testing_data/"
     num_training = 166580  #use find . -type f | wc -l for each directory
     num_validation = 60990
-    num_epochs = NUM_EPOCHS
+    num_epochs = int(args.num_epochs)
+    bat_size = int(args.batch_size)
 
     #generation
     training_generator_parameters = ImageDataGenerator(rescale=1./255, shear_range=0.2, zoom_range=0.2,horizontal_flip=True)
@@ -49,28 +51,32 @@ def main():
     train_data = training_generator_parameters.flow_from_directory(
         training_dir,
         target_size=(width, height),
-        batch_size=BATCH_SIZE,
+        batch_size=bat_size,
         class_mode='categorical')
 
     validation_data_generator = testing_generator_parameters.flow_from_directory(
         validation_dir,
         target_size=(width, height),
-        batch_size=BATCH_SIZE,
+        batch_size=bat_size,
         class_mode='categorical')
 
     sn.fit_generator(
         train_data,
-        steps_per_epoch=(num_training // BATCH_SIZE),
+        steps_per_epoch=(num_training // bat_size),
         epochs = num_epochs,
         validation_data=validation_data_generator,
-        validation_steps=(num_validation // BATCH_SIZE))
+        validation_steps=(num_validation // bat_size))
 
     history = sn
     with open('../training_hist/{}.json'.format(datetime.now().strftime('%m-%d-%X')), 'w') as f:
         json.dump(history.history, f)
 
-    sn.save_weights('/kw_resources/food/results/weights.h5')
+   # sn.save_weights('/kw_resources/food/results/weights.h5')
 
 if __name__ == '__main__':
-    main()
+    args = argparse.ArgumentParser()
+    args.add_argument("--nb_epochs", default=NUM_EPOCHS)
+    args.add_argument("--batch_size", default=BATCH_SIZE)
+    args = args.parse_args()
+    main(args)
     input('Press ENTER to exit..')

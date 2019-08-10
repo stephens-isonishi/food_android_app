@@ -68,7 +68,7 @@ def main():
     with open('food/results/{}.json'.format(datetime.now().strftime('%m-%d-%X')), 'w') as f:
         json.dump(history.history, f)
 
-    sn.save_weights('/kw_resources/food/results/weights.h5')
+   # sn.save_weights('/kw_resources/food/results/weights.h5')
 
 if __name__ == '__main__':
     main()
