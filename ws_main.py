@@ -65,7 +65,7 @@ def main():
         validation_steps=(num_validation // BATCH_SIZE))
 
     history = sn
-    with open('food/results/{}.json'.format(datetime.now().strftime('%m-%d-%X')), 'w') as f:
+    with open('food/results/{}.json'.format(datetime.datetime.now().strftime('%m-%d-%X')), 'w') as f:
         json.dump(history.history, f)
 
    # sn.save_weights('/kw_resources/food/results/weights.h5')

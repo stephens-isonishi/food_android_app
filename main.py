@@ -1,6 +1,6 @@
 import model
 from keras.optimizers import SGD
-from keras.utils import multi_gpu_model 
+#from keras.utils import multi_gpu_model 
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
 #from visual_callbacks import AccLossPlotter
@@ -11,6 +11,7 @@ import pickle
 import datetime
 import json
 import argparse
+import tensorflow as tf
 
 
 BATCH_SIZE = 64
@@ -30,9 +31,14 @@ def main(args):
     print('build model')
 
     #obviously mess around with the hyperparameters
-    #sgd = SGD(lr = .001, decay=.0002, momentum=.9, nesterov=True)
+   # sgd = SGD(lr = .001, decay=.0002, momentum=.9, nesterov=True)
     
-    sn.compile(optimizer='adam', loss='categorical_crossentropy', metrics =['accuracy'])
+    run_opts = tf.RunOptions(report_tensor_allocations_upon_oom = True)    
+    sn.compile(optimizer='adam', loss='categorical_crossentropy', metrics =['accuracy'], options = run_opts)
+
+
+
+
     print(sn.summary)
 
     #training
@@ -59,16 +65,16 @@ def main(args):
         target_size=(width, height),
         batch_size=bat_size,
         class_mode='categorical')
-
+    print("got to before fit generator")
     sn.fit_generator(
         train_data,
         steps_per_epoch=(num_training // bat_size),
         epochs = num_epochs,
         validation_data=validation_data_generator,
         validation_steps=(num_validation // bat_size))
-
+    print("fit_gen was not issue")
     history = sn
-    with open('../training_hist/{}.json'.format(datetime.now().strftime('%m-%d-%X')), 'w') as f:
+    with open('../training_hist/{}.json'.format(datetime.datetime.now().strftime('%m-%d-%X')), 'w') as f:
         json.dump(history.history, f)
 
    # sn.save_weights('/kw_resources/food/results/weights.h5')
