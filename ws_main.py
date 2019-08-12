@@ -12,7 +12,7 @@ import json
 
 
 BATCH_SIZE = 512
-NUM_EPOCHS = 200
+NUM_EPOCHS = 100
 
 def main():
     np.random.seed(45)
