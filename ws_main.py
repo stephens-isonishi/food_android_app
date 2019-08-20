@@ -18,7 +18,7 @@ FILEPATH = '/kw_resources/food/model_weights/'
 BATCH_SIZE = 512
 NUM_EPOCHS = 1
 
-def find_most_recent_model:
+def find_most_recent_model():
     recent = 0
     ans = ""
     for file in os.listdir(FILEPATH):
