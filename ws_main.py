@@ -47,8 +47,9 @@ def main():
     #sgd = SGD(lr = .001, decay=.0002, momentum=.9, nesterov=True)
     current_epoch_num = 0
     saved_model, current_epoch_num = find_most_recent_model()
-    if saved_model.is_file():
-        sn.load(saved_model) ## or is it just load? according keras callbacks
+    print("saved model: " + saved_model)
+    if len(saved_model) > 0:
+        sn.load(FILEPATH + saved_model) ## or is it just load? according keras callbacks
 
     ######question is, does load_model(saved_model) save the number of epochs?
     ###does it matter? we just look at number, add everything?
