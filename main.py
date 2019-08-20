@@ -7,6 +7,7 @@ from keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.client import device_lib
 
 import numpy as np
+import os
 import pickle
 import datetime
 import json
@@ -18,6 +19,8 @@ BATCH_SIZE = 64
 NUM_EPOCHS = 1
 
 def main(args):
+    from tensorflow.python.client import device_lib
+    print(device_lib.list_local_devices())
     np.random.seed(45)
     nb_class = 451 #found by doing: echo */ | wc
     width, height = 224, 224
@@ -31,12 +34,13 @@ def main(args):
     print('build model')
 
     #obviously mess around with the hyperparameters
-   # sgd = SGD(lr = .001, decay=.0002, momentum=.9, nesterov=True)
+    sgd = SGD(lr = .001, decay=.0002, momentum=.9, nesterov=True)
     
-    run_opts = tf.RunOptions(report_tensor_allocations_upon_oom = True)    
-    sn.compile(optimizer='adam', loss='categorical_crossentropy', metrics =['accuracy'], options = run_opts)
-
-
+    #run_opts = tf.RunOptions(report_tensor_allocations_upon_oom = True)
+    #runmeta = tf.RunMetadata()
+    #add run_metadata=runmeta inside compile....    
+    #sn.compile(optimizer=sgd, loss='categorical_crossentropy', metrics =['accuracy'], options = run_opts)
+    sn.compile(optimizer=sgd, loss='categorical_crossentropy', metrics =['accuracy'])
 
 
     print(sn.summary)
@@ -65,17 +69,19 @@ def main(args):
         target_size=(width, height),
         batch_size=bat_size,
         class_mode='categorical')
-    print("got to before fit generator")
+    print("before fit gen")
     sn.fit_generator(
         train_data,
         steps_per_epoch=(num_training // bat_size),
-        epochs = num_epochs,
+        epochs=num_epochs,
+        workers=0,
+        use_multiprocessing=False,
         validation_data=validation_data_generator,
         validation_steps=(num_validation // bat_size))
     print("fit_gen was not issue")
     history = sn
-    with open('../training_hist/{}.json'.format(datetime.datetime.now().strftime('%m-%d-%X')), 'w') as f:
-        json.dump(history.history, f)
+    with open('../training_hist/e:{}_b:{}_{}'.format(num_epochs, bat_size,datetime.datetime.now().strftime('%m-%d-%X')), 'wb') as f:
+        pickle.dump(history.history, f)
 
    # sn.save_weights('/kw_resources/food/results/weights.h5')
 
