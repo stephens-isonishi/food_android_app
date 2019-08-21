@@ -110,7 +110,7 @@ def main():
         validation_data=validation_data_generator,
         validation_steps=(num_validation // BATCH_SIZE),
         callbacks=callbacks_list,
-        verbose=2)
+        verbose=1)
 
     history = sn
     with open('/kw_resources/food/results/e:{}_b:{}_{}'.format(num_epochs, bat_size, datetime.datetime.now().strftime('%m-%d-%X')), 'wb') as f:
