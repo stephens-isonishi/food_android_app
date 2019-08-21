@@ -17,7 +17,7 @@ import re
 
 FILEPATH = '/kw_resources/food/model_weights/'
 BATCH_SIZE = 512
-NUM_EPOCHS = 1
+NUM_EPOCHS = 3
 
 def find_most_recent_model():
     recent = 0
@@ -49,29 +49,30 @@ def main():
     current_epoch_num = 0
     saved_model, current_epoch_num = find_most_recent_model()
     print("saved model: " + saved_model + " current epoch: {}".format(current_epoch_num))
-    if len(saved_model) > 0 and current_epoch_num != 1:
-        sn = load_model(FILEPATH + saved_model) ## or is it just load? according keras callbacks
+    if len(saved_model) > 0:
+        sn = load_model(FILEPATH + saved_model)
 
-    ######question is, does load_model(saved_model) save the number of epochs?
-    ###does it matter? we just look at number, add everything?
 
+    ##potential issue: adam may reset previous history, may need to use a different optimizer
     sn.compile(optimizer='adam', loss='categorical_crossentropy', metrics =['accuracy'])
     print(sn.summary)
 
-    #training
+
     training_dir = '/kw_resources/food/dataset/training_data/'
-    #training_dir = "../training_data/"
     validation_dir = '/kw_resources/food/dataset/testing_data/'
-    #validation_dir = "../testing_data/"
+    
     num_training = 166580  #use find . -type f | wc -l for each directory
     num_validation = 60990
-    num_epochs = 1
-    if current_epoch_num > NUM_EPOCHS:
+    
+    num_epochs = NUM_EPOCHS
+    
+    if current_epoch_num > num_epochs:
         print("already trained for {} epochs".format(current_epoch_num))
         exit()
     else:
-        num_epochs = NUM_EPOCHS - current_epoch_num
+        num_epochs = num_epochs - current_epoch_num
         print("number of epochs to train for: {}".format(num_epochs))
+
 
 
     #generation
@@ -108,7 +109,7 @@ def main():
         validation_data=validation_data_generator,
         validation_steps=(num_validation // BATCH_SIZE),
         callbacks=callbacks_list,
-        verbose=1)
+        verbose=2)
 
     history = sn
     with open('/kw_resources/food/results/e:{}_b:{}_{}'.format(num_epochs, bat_size, datetime.datetime.now().strftime('%m-%d-%X')), 'wb') as f:
