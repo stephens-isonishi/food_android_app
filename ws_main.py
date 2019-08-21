@@ -33,6 +33,7 @@ def main():
     np.random.seed(45)
     nb_class = 451 #found by doing: echo */ | wc
     width, height = 224, 224
+    bat_size = BATCH_SIZE
 
     sn = model.SqueezeNet(nb_classes=nb_class, inputs=(3, height, width))
 
@@ -110,7 +111,7 @@ def main():
         verbose=1)
 
     history = sn
-    with open('/kw_resources/food/results/e:{}_b:{}_{}'.format(num_epochs, batch_size, datetime.datetime.now().strftime('%m-%d-%X')), 'wb') as f:
+    with open('/kw_resources/food/results/e:{}_b:{}_{}'.format(num_epochs, bat_size, datetime.datetime.now().strftime('%m-%d-%X')), 'wb') as f:
         pickle.dump(history.history, f)
 
    # sn.save_weights('/kw_resources/food/results/weights.h5')
