@@ -17,13 +17,15 @@ import re
 
 
 FILEPATH = '/kw_resources/food/model_weights/'
-BATCH_SIZE = 512
+BATCH_SIZE = 256
 NUM_EPOCHS = 3
 
 def find_most_recent_model():
     recent = 0
     ans = ""
+
     for file in os.listdir(FILEPATH):
+
         temp = int(re.search(r'\d+', file).group(0))
         if recent < temp:
             recent = temp
@@ -48,9 +50,10 @@ def main():
     #obviously mess around with the hyperparameters
     #sgd = SGD(lr = .001, decay=.0002, momentum=.9, nesterov=True)
     current_epoch_num = 0
+    num_files = 0
     saved_model, current_epoch_num = find_most_recent_model()
     print("saved model: " + saved_model + " current epoch: {}".format(current_epoch_num))
-    if len(saved_model) > 0:
+    if len(saved_model) > 0 and current_epoch_num > 1:
         sn = load_model(FILEPATH + saved_model)
 
 
