@@ -1,5 +1,6 @@
 import model
 from keras.optimizers import SGD
+from keras.models import load_model
 from keras.utils import multi_gpu_model 
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
