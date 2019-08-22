@@ -21,7 +21,7 @@ import glob
 
 FILEPATH = '/kw_resources/food/model_weights/'
 BATCH_SIZE = 256
-NUM_EPOCHS = 5
+NUM_EPOCHS = 20
 
 def empty_folder():
     folder = FILEPATH
