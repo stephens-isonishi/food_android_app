@@ -18,7 +18,7 @@ import re
 
 FILEPATH = '/kw_resources/food/model_weights/'
 BATCH_SIZE = 256
-NUM_EPOCHS = 3
+NUM_EPOCHS = 5
 
 def find_most_recent_model():
     recent = 0
