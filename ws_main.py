@@ -19,6 +19,7 @@ import shutil
 import glob
 
 
+
 FILEPATH = '/kw_resources/food/model_weights/'
 BATCH_SIZE = 256
 NUM_EPOCHS = 20
