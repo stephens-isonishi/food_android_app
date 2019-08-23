@@ -74,7 +74,7 @@ def main():
     saved_model, current_epoch_num = find_most_recent_model()
     print("saved model: " + saved_model + "current epoch: {}".format(current_epoch_num))
     if len(saved_model) > 0 and current_epoch_num != 0:
-        sn = load_model(FILEPATH + saved_model)
+        sn = load_model(saved_model)
 
 
     ##potential issue: adam may reset previous history, may need to use a different optimizer
