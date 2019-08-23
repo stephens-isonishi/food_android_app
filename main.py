@@ -18,10 +18,12 @@ import tensorflow as tf
 BATCH_SIZE = 64
 NUM_EPOCHS = 1
 
+import warnings
+warnings.filterwarnings("ignore")
+
 def main(args):
-    from tensorflow.python.client import device_lib
-    print(device_lib.list_local_devices())
-    np.random.seed(45)
+
+
     nb_class = 451 #found by doing: echo */ | wc
     width, height = 224, 224
 
