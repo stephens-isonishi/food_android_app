@@ -5,10 +5,10 @@ from keras.layers import Flatten, Dropout
 from keras.layers import Convolution2D, MaxPooling2D
 from keras.layers import AveragePooling2D
 from keras import backend as K
-K.set_image_data_format('channels_last')
+K.set_image_data_format('channels_first')
 
-#def SqueezeNet(nb_classes, inputs=(3, 224, 224)):
-def SqueezeNet(nb_classes, inputs=(224, 224, 3)):
+def SqueezeNet(nb_classes, inputs=(3, 224, 224)):
+#def SqueezeNet(nb_classes, inputs=(224, 224, 3)):
     """ Keras Implementation of SqueezeNet(arXiv 1602.07360)
     Arguments:
         nb_classes: total number of final categories
