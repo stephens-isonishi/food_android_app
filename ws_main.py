@@ -46,6 +46,7 @@ def find_most_recent_model():
 def main(args):
     reset_training = args.reset_training
     if reset_training:
+        "resetting training!"
         empty_folder()
 
     np.random.seed(45)
