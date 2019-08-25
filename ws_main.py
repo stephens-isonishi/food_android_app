@@ -13,27 +13,26 @@ import pickle
 import datetime
 import json
 import os
-import re
-import os
 import shutil
 import glob
+import argparse
 
 
 
 FILEPATH = '/kw_resources/food/model_weights/'
 BATCH_SIZE = 256
-NUM_EPOCHS = 20
+NUM_EPOCHS = 200
 
 def empty_folder():
-    folder = FILEPATH
-    for the_file in os.listdir(folder):
-        file_path = os.path.join(folder, the_file)
-        try:
-            if os.path.isfile(file_path):
-                os.unlink(file_path)
-            #elif os.path.isdir(file_path): shutil.rmtree(file_path)
-        except Exception as e:
-            print(e)
+    source = FILEPATH
+    num_epochs = len([1 for x in list(os.scandir(source)) if x.is_file])
+    dest1 = '/kw_resources/food/weight_history/epochs{}'.format(num_epochs)
+
+    files = os.listdir(source)
+    for f in files:
+        shutil.move(source+f, dest1)
+
+
 
 def find_most_recent_model():
     if not os.listdir(FILEPATH):
@@ -44,8 +43,8 @@ def find_most_recent_model():
     count = len([1 for x in list(os.scandir(FILEPATH)) if x.is_file()])
     return latest_file, count
 
-def main():
-    reset_training = False
+def main(args):
+    reset_training = args.reset_training
     if reset_training:
         empty_folder()
 
@@ -88,7 +87,8 @@ def main():
     num_training = 166580  #used find . -type f | wc -l for each directory
     num_validation = 60990
     
-    num_epochs = NUM_EPOCHS
+    num_epochs = int(args.nb_epochs)
+    bat_size = int(args.batch_size)
     
     if current_epoch_num > num_epochs:
         print("already trained for {} epochs".format(current_epoch_num))
@@ -105,13 +105,13 @@ def main():
     train_data = training_generator_parameters.flow_from_directory(
         training_dir,
         target_size=(width, height),
-        batch_size=BATCH_SIZE,
+        batch_size=bat_size,
         class_mode='categorical')
 
     validation_data_generator = testing_generator_parameters.flow_from_directory(
         validation_dir,
         target_size=(width, height),
-        batch_size=BATCH_SIZE,
+        batch_size=bat_size,
         class_mode='categorical')
 
 
@@ -129,10 +129,10 @@ def main():
     #fitting
     sn.fit_generator(
         train_data,
-        steps_per_epoch=(num_training // BATCH_SIZE),
+        steps_per_epoch=(num_training // bat_size),
         epochs = num_epochs,
         validation_data=validation_data_generator,
-        validation_steps=(num_validation // BATCH_SIZE),
+        validation_steps=(num_validation // bat_size),
         callbacks=callbacks_list,
         verbose=1)
 
@@ -144,5 +144,10 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    args = argparse.ArgumentParser()
+    args.add_argument("--nb_epochs", default=NUM_EPOCHS)
+    args.add_argument("--batch_size", default=BATCH_SIZE)
+    args.add_argument("--reset_training",'-r', action='store_true')
 
+    args = args.parse_args()
+    main(args)
