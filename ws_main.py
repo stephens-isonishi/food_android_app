@@ -21,7 +21,7 @@ import argparse
 
 FILEPATH = '/kw_resources/food/model_weights/'
 BATCH_SIZE = 256
-NUM_EPOCHS = 200
+NUM_EPOCHS = 300
 
 def empty_folder():
     source = FILEPATH
@@ -46,7 +46,7 @@ def find_most_recent_model():
 def main(args):
     reset_training = args.reset_training
     if reset_training:
-        "resetting training!"
+        print("resetting training!")
         empty_folder()
 
     np.random.seed(45)
