@@ -16,12 +16,13 @@ import os
 import shutil
 import glob
 import argparse
+import platform
 
 
 
 FILEPATH = '/kw_resources/food/model_weights/'
 BATCH_SIZE = 256
-NUM_EPOCHS = 300
+NUM_EPOCHS = 100
 
 def empty_folder():
     source = FILEPATH
@@ -44,6 +45,10 @@ def find_most_recent_model():
     return latest_file, count
 
 def main(args):
+    if platform.python_version() != '3.7.4':
+        print(platform.python_version())
+        exit()
+        
     reset_training = args.reset_training
     if reset_training:
         print("resetting training!")
