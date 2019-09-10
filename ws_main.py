@@ -22,7 +22,7 @@ import platform
 
 FILEPATH = '/kw_resources/food/model_weights/'
 BATCH_SIZE = 256
-NUM_EPOCHS = 10
+NUM_EPOCHS = 3
 
 def empty_folder():
     source = FILEPATH
