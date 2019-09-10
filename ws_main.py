@@ -22,7 +22,7 @@ import platform
 
 FILEPATH = '/kw_resources/food/model_weights/'
 BATCH_SIZE = 256
-NUM_EPOCHS = 20
+NUM_EPOCHS = 1
 
 def empty_folder():
     source = FILEPATH
@@ -45,9 +45,7 @@ def find_most_recent_model():
     return latest_file, count
 
 def main(args):
-    if platform.python_version() != '3.6.8':
-        print(platform.python_version())
-        exit()
+    print(platform.python_version())
 
     reset_training = args.reset_training
     if reset_training:
