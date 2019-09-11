@@ -1,11 +1,11 @@
 import model
 from keras.optimizers import SGD
 from keras.models import load_model
-from keras.utils import multi_gpu_model 
+#from keras.utils import multi_gpu_model 
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
 #from visual_callbacks import AccLossPlotter
-from tensorflow.python.client import device_lib
+#from tensorflow.python.client import device_lib
 from pathlib import Path
 
 import numpy as np
@@ -24,15 +24,28 @@ FILEPATH = '/kw_resources/food/model_weights/'
 BATCH_SIZE = 256
 NUM_EPOCHS = 3
 
-def empty_folder():
+def empty_folder_and_move():
     source = FILEPATH
     num_epochs = len([1 for x in list(os.scandir(source)) if x.is_file])
+    if num_epochs == 0:
+        print("empty folder, done!")
+        return
+
     dest1 = '/kw_resources/food/weight_history/epochs{}'.format(num_epochs)
 
     files = os.listdir(source)
     for f in files:
         shutil.move(source+f, dest1)
 
+def just_empty_folder():
+    source = FILEPATH
+    for files in os.listdir(source):
+        file_path = os.path.join(source, files)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            print(e)
 
 
 def find_most_recent_model():
@@ -47,10 +60,13 @@ def find_most_recent_model():
 def main(args):
     print(platform.python_version())
 
-    reset_training = args.reset_training
-    if reset_training:
-        print("resetting training!")
-        empty_folder()
+    if args.reset_training:
+        print("resetting training by removing all weights without saving previous training")
+        just_empty_folder()
+
+    if args.new_training:
+        print("moving contents of folder to new location")
+        empty_folder_and_move()
 
     np.random.seed(45)
     nb_class = 451 #found by doing: echo */ | wc
@@ -61,12 +77,12 @@ def main(args):
     sn = model.SqueezeNet(nb_classes=nb_class, inputs=(3, height, width))
 
     #multi-gpu
-    local_devices = device_lib.list_local_devices()
-    num_gpus = len([dev.name for dev in local_devices if dev.device_type == 'GPU'])
-    print(num_gpus)
-    if(num_gpus >= 2):
-        sn = multi_gpu_model(sn, num_gpus)
-    print('build model')
+    # local_devices = device_lib.list_local_devices()
+    # num_gpus = len([dev.name for dev in local_devices if dev.device_type == 'GPU'])
+    # print(num_gpus)
+    # if(num_gpus >= 2):
+    #     sn = multi_gpu_model(sn, num_gpus)
+    # print('build model')
 
 
 
@@ -151,7 +167,8 @@ if __name__ == '__main__':
     args = argparse.ArgumentParser()
     args.add_argument("--nb_epochs", default=NUM_EPOCHS)
     args.add_argument("--batch_size", default=BATCH_SIZE)
-    args.add_argument("--reset_training",'-r', action='store_true')
+    args.add_argument("--new_training",'-n', action='store_true')
+    args.add_argument("--reset_training", '-r', action='store_true')
 
     args = args.parse_args()
     main(args)
