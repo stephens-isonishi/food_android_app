@@ -22,7 +22,7 @@ import platform
 
 FILEPATH = '/kw_resources/food/model_weights/'
 BATCH_SIZE = 256
-NUM_EPOCHS = 3
+NUM_EPOCHS = 1
 
 def empty_folder_and_move():
     source = FILEPATH
@@ -136,7 +136,7 @@ def main(args):
 
 
     #checkpoint
-    filepath = FILEPATH + "weights-{epoch:02d}-{val_acc:.2f}.hdf5"
+    filepath = FILEPATH + "weights-{epoch:02d}-{val_acc:.2f}.h5"
     checkpoint = ModelCheckpoint(
         filepath, 
         monitor='val_acc', 
