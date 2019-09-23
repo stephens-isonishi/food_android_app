@@ -96,7 +96,7 @@ x = Activation('relu')(x)
 x = Dropout(.5)(x)
 predictions = Dense(n_classes, activation='softmax')(x)
 
-# x = base_model.output
+# x = base_model.output 
 # x = AveragePooling2D((8, 8), strides=(8, 8), name='avg_pool')(x)
 # x = Flatten(name='flatten')(x)
 # predictions = Dense(101, activation='softmax', name='predictions')(x)
@@ -136,3 +136,4 @@ model.fit_generator(generator,
                     nb_epoch=100,
                     verbose=1,
                     callbacks=[csv_logger, checkpointer])
+
