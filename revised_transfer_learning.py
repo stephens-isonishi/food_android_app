@@ -81,8 +81,8 @@ def main(args):
 
     # training_dir = TRAINING_DIR
     # testing_dir = TESTING_DIR
-    training_dir = DIR1
-    testing_dir = DIR2
+    training_dir = TRAINING_DIR
+    testing_dir = TESTING_DIR
     num_training = TRAIN_SIZE
     num_testing = TEST_SIZE
 
