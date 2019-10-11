@@ -1,4 +1,9 @@
 
+'''
+used as reference material--general model structure in transfer learning
+
+'''
+
 from keras.utils.np_utils import to_categorical
 from keras.applications.inception_v3 import InceptionV3
 from keras.applications.inception_v3 import preprocess_input, decode_predictions

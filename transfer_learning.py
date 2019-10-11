@@ -1,7 +1,13 @@
+'''
+This code was unusable on my lab computer because it loads all images into a giant numpy array and there is not enough memory for it. One of the benefits of using a numpy array is the ability to employ sklearn train-test-split at ratios we like. However, the creators of the food dataset (Food-475) already split the data into training and testing so the other method of flow_from_directory is better in this case. See revised_transfer_learning.py
+'''
+
+
+
 import os, sys
-import matplotlib
-matplotlib.use('agg')
-import matplotlib.pyplot as plt
+#import matplotlib
+# matplotlib.use('agg')
+# import matplotlib.pyplot as plt
 import argparse
 import numpy as np
 
@@ -30,25 +36,30 @@ FILEPATH = '/kw_resources/food/transfer_learning_training/'
 DIR1 = '../training_data/'
 DIR2 = '../testing_data/'
 
-def load_images_into_np(dir):
+def load_images_into_np(dir1, dir2):
 	#X = np.array([,,,])
 	X = list()
 	y = list()
+	directories = [dir1, dir2]
+	count = 0
+	for i in directories:
+		for root, dirs, files in os.walk(i):
+			for name in files:
+				image_path = os.path.join(root, name)
+				temp = root
+				temp = temp.split('/')
+				label = temp[len(temp)-1]
+				image_pixels = list(Image.open(image_path).getdata())
+				#X = np.vstack((X, image_pixels))
+				X.append(image_pixels)
+				y.append(label)
+				count = count + 1
+				if count%1000 == 0:
+					print(count)
 
-	for root, dirs, files in os.walk(dir):
-		for name in files:
-			image_path = os.path.join(root, name)
-			temp = root
-			temp = temp.split('/')
-			label = temp[len(temp)-1]
-			image_pixels = list(Image.open(image_path).getdata())
-			#X = np.vstack((X, image_pixels))
-			X.append(image_pixels)
-			y.append(label)
-
-		else:
-			continue
-		break
+			else:
+				continue
+			break
 
 	X = np.array(X)
 	print(X.shape)
@@ -69,10 +80,8 @@ def main(args):
     num_epochs = int(args.nb_epoch)
     batch = BATCH_SIZE
     num_classes = NUM_CLASSES
-    X1, y1 = load_images_into_np(DIR1)
-    X2, y2 = load_images_into_np(DIR2)
-    X = np.vstack((X1,X2))
-    y = y1.append(y2)
+    X, y = load_images_into_np(TRAINING_DIR, TESTING_DIR)
+
 
     print("loaded into giant numpy array")
 
