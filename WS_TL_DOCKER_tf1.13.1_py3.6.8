@@ -1,6 +1,8 @@
 FROM tensorflow/tensorflow:1.13.1-gpu-py3
 FROM python:3.6.8
 
+RUN apt-get update && apt-get install -y git
+
 RUN pip install --upgrade pip
 
 RUN apt-get update
@@ -11,4 +13,11 @@ RUN pip install keras==2.2.5
 RUN pip install pillow
 RUN pip install sklearn
 
-CMD python3 /kw_resources/food/transfer_learning_training/transfer_learning.py
+RUN git clone https://github.com/stephenscki/food_android_app
+
+RUN printenv
+
+WORKDIR food_android_app
+
+CMD python3 revised_transfer_learning.py
+

@@ -53,7 +53,8 @@ def clean_directory(directory):
 	for files in os.listdir(source):
 		file_path = os.path.join(source, files)
 		try:
-			if os.path.isfile(file_path)
+			if os.path.isfile(file_path):
+				os.unlink(file_path)
 		except Exception as e:
 			print(e)
 
