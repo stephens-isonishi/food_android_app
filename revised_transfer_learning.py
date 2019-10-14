@@ -14,7 +14,7 @@ import glob
 from keras import backend as K
 from keras import __version__
 from keras.applications.inception_v3 import InceptionV3, preprocess_input
-from keras.models import Model
+from keras.models import Model, load_model
 from keras.layers import Dense, AveragePooling2D, GlobalAveragePooling2D, Input, Flatten, Dropout, Activation
 from keras.layers.normalization import BatchNormalization
 from keras.callbacks import ModelCheckpoint, CSVLogger
@@ -127,9 +127,9 @@ def main(args):
     	weights='imagenet',
     	include_top=False, 
     	input_tensor=Input(shape=(299,299,3)))
-    print("loaded inceptionv3...")
+
     model = last_layer_insertion(base_model, num_classes)
-    print("inserted last layer...")
+
     for layer in model.layers[:172]:
     	layer.trainable = False
     for layer in model.layers[172:]:
