@@ -161,8 +161,8 @@ def main(args):
     	print('already trained for {} epochs'.format(current_epoch_num))
     	exit()
     else:
-    	num_epochs = num_epochs - current_epoch_num
-    	print('trained for {} epochs so far, {} more epochs to go...'.format(current_epoch_num, num_epochs - current_epoch_num))
+    	num_epochs_togo = num_epochs - current_epoch_num
+    	print('trained for {} epochs so far, {} more epochs to go...'.format(current_epoch_num, num_epochs_togo))
 
 
     filepath = FILEPATH + "weights-{epoch:02d}-{val_acc:.2f}.hdf5"
