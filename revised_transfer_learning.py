@@ -176,7 +176,6 @@ def main(args):
     	save_weights_only=False,
     	mode='max')
 
-    csv_logger = CSVLogger(FILEPATH + 'epochs_training.log')
 
     model.fit_generator(
     	train_generator,
@@ -184,7 +183,7 @@ def main(args):
     	steps_per_epoch=(num_training // batch),
     	epochs=num_epochs,
     	validation_steps=(num_testing // batch),
-    	callbacks=[csv_logger, checkpoint],
+    	callbacks=[checkpoint],
     	verbose=1)
 
     print("done")
