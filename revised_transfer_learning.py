@@ -148,7 +148,6 @@ def main(args):
 
     if saved_model.endswith('.hdf5') and current_epoch_num != 0:
     	model = load_model(saved_model)
-        print("loaded model from previous parameters")
 
 
     #try adam too...
