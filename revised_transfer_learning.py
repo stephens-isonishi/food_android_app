@@ -165,7 +165,7 @@ def main(args):
     	print('trained for {} epochs so far, {} more epochs to go...'.format(current_epoch_num, num_epochs_togo))
 
 
-    filepath = FILEPATH + "weights-{epoch:02d}-{val_acc:.2f}.hdf5"
+    filepath = FILEPATH + "weights-{epoch:02d}-{val_acc:.3f}.hdf5"
     
     checkpoint = ModelCheckpoint(
     	filepath,
