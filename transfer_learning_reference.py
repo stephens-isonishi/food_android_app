@@ -1,5 +1,5 @@
 '''
-This code was unusable on my lab computer because it loads all images into a giant numpy array and there is not enough memory for it. One of the benefits of using a numpy array is the ability to employ sklearn train-test-split at ratios we like. However, the creators of the food dataset (Food-475) already split the data into training and testing so the other method of flow_from_directory is better in this case. See revised_transfer_learning.py
+This code was unusable on the lab computer because it loads all images into a giant numpy array and there is not enough memory for it. One of the benefits of using a numpy array is the ability to employ sklearn train-test-split at ratios we like. However, the creators of the food dataset (Food-475) already split the data into training and testing so the other method of flow_from_directory is better in this case. See revised_transfer_learning.py
 '''
 
 

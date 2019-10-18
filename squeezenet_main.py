@@ -1,4 +1,11 @@
-import model
+'''
+SqueezeNet is a deep neural network that was developed by researchers at DeepScale, UC Berkeley, and Stanford in 2016. One of the biggest benefits in using SqueezeNet is that it only has around 5 MB of parameters as opposed to models like AlexNet that has 240 MB of parameters. SqueezeNet is frequently compared to AlexNet because they have similar accuracy when evaluated on the ImageNet image classification dataset. Due to the fewer parameters, SqueezeNet may be suited for mobile app development. I thought I can try applying this SqueezeNet model to the Food-475 dataset. I could not run this program on my computer due to how much time it took, with a speed of about 1 epoch every 4 hours. Thus, I revised the model a bit, so it can be run on my lab's "workstation" computer that has 4 NVIDIA GTX 1080 TIs and uses Distributed Training in tensorflow. The workstation program is titled workstation_squeezenet_main.py.
+'''
+
+
+
+
+import squeezenet_model
 from keras.optimizers import SGD
 #from keras.utils import multi_gpu_model 
 from keras.callbacks import EarlyStopping, ModelCheckpoint
