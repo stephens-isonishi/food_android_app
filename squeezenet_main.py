@@ -33,8 +33,9 @@ def main(args):
 
     nb_class = 451 #found by doing: echo */ | wc
     width, height = 224, 224
+    sn = squeezenet_model.SqueezeNet(nb_classes=nb_class, inputs=(height,width, 3))
 
-    sn = model.SqueezeNet(nb_classes=nb_class, inputs=(3, height, width))
+#    sn = model.SqueezeNet(nb_classes=nb_class, inputs=(3, height, width))
     # local_devices = device_lib.list_local_devices()
     # num_gpus = len([dev.name for dev in local_devices if dev.device_type == 'GPU'])
     # print(num_gpus)
@@ -88,9 +89,6 @@ def main(args):
         validation_data=validation_data_generator,
         validation_steps=(num_validation // bat_size))
     print("fit_gen was not issue")
-    history = sn
-    with open('../training_hist/e:{}_b:{}_{}'.format(num_epochs, bat_size,datetime.datetime.now().strftime('%m-%d-%X')), 'wb') as f:
-        pickle.dump(history.history, f)
 
    # sn.save_weights('/kw_resources/food/results/weights.h5')
 
