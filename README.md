@@ -20,11 +20,11 @@ The original driver for the the program was [squeezenet_main.py](squeezenet_main
 The conversion from an h5 file to a tflite file should be straightforward, as can be seen from the [API](https://www.tensorflow.org/api_docs/python/tf/lite/TFLiteConverter). However, there were some hiccups. 
 1. Attempted to convert the file on personal computer gave an `SystemError: unknown opcode`. After poking around, this is because of the **version mismatch** in Python3. The model was trained on Python 3.5.1, while my personal computer has 3.7.4. Workaround: Use Docker to specify version of Tensorflow, Python, Keras, etc.
 2. Used Docker to make sure computer used Python 3.5.1, but now ran into a different error, [`module 'keras.backend' has no attribute 'slice'`](https://github.com/keras-team/keras-contrib/issues/488). After banging my head against the wall for a couple days, I decided to retrain the model but with Python 3.6.8, and Tensorflow 1.14.0.
-3. There was no problem during retraining but during conversion but other errors kept appearing.
+3. There was no problem during retraining but during conversion other errors kept occurring.
 
 
 ## Current Approach
-Considered using new approach with Inception V3 transfer learning, and made the last 178 layers trainable. According to [stratospark's Github](https://github.com/stratospark/food-101-keras), they had some success with this method on the Food-101 dataset. Thus, I thought it was worth considering. This is available in the [revised_transfer_learning.py](revised_transfer_learning.py) file. My initial thought process was to use numpy arrays and jotted out some [code](pretrained_reference/numpy_tl_reference.py) and I also used stratospark's code for Food-101 as [reference](pretrained_reference/stratospark_food101_reference.py).
+Considered using new approach with Inception V3 transfer learning, and made the last 178 layers trainable. According to [stratospark's Github](https://github.com/stratospark/food-101-keras), they had some success with this method on the Food-101 dataset. Thus, I thought it was worth considering. This is available in the [**revised_transfer_learning.py**](revised_transfer_learning.py) file, and is my main focus at the moment for this project. My initial thought process was to use numpy arrays and jotted out some [code](pretrained_reference/numpy_tl_reference.py) and I also used stratospark's code for Food-101 as [reference](pretrained_reference/stratospark_food101_reference.py).
 Currently training model...
 
 ## App Framework
