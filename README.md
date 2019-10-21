@@ -26,7 +26,6 @@ The conversion from an h5 file to a tflite file should be straightforward, as ca
 
 
 ## Current Approach
-Considered using new approach with Inception V3 transfer learning, and made the last 178 layers trainable. According to [stratospark's Github](https://github.com/stratospark/food-101-keras), they had some success with this method on the Food-101 dataset. Thus, I thought it was worth considering. This is available in the `revised_transfer_learning.py` file. Some of the code structure is from 
-
-## Considering to...
+Considered using new approach with Inception V3 transfer learning, and made the last 178 layers trainable. According to [stratospark's Github](https://github.com/stratospark/food-101-keras), they had some success with this method on the Food-101 dataset. Thus, I thought it was worth considering. This is available in the `revised_transfer_learning.py` file. My initial thought process was to use numpy arrays as can be seen in `pretrained_reference/numpy_tl_reference.py` and I also used stratospark's code for Food-101 as reference which is available in `pretrained_reference/stratospark_food101_reference.py`.
+Currently training model...
 
