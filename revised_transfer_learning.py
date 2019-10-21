@@ -1,7 +1,9 @@
 '''
-Program used to train transfer learning model that uses Inception V3 and retrains the last 173 layers of the model to fit our dataset. This one runs on my lab's workstation, which has an NVIDIA GTX 1080 TI for GPU, as opposed to my 980. There is a substantial difference in time spent training between the GPUs.
-
+Program used to train transfer learning model that uses Inception V3 and retrains the last 173 layers of the model to fit the dataset. 
+This one runs on my lab's workstation, which has an NVIDIA GTX 1080 TI for GPU, as opposed to my GTX 980. 
+There is a substantial difference in time spent training between the GPUs.
 '''
+
 import os, sys
 #import matplotlib
 # matplotlib.use('agg')
