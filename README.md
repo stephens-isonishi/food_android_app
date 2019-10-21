@@ -20,13 +20,11 @@ The model for SqueezeNet is saved as `squeezenet_model.py`, and the the program 
 The conversion from an h5 file to a tflite file should be straightforward, as can be seen from the [API](https://www.tensorflow.org/api_docs/python/tf/lite/TFLiteConverter). However, there were some hiccups. 
 1. Attempted to convert the file on personal computer gave an `SystemError: unknown opcode`. After poking around, this is because of the **version mismatch** in Python3. The model was trained on Python 3.5.1, while my personal computer has 3.7.4. Workaround: Use Docker to specify version of Tensorflow, Python, Keras, etc.
 2. Used Docker to make sure computer used Python 3.5.1, but now ran into a different error, [`module 'keras.backend' has no attribute 'slice'`](https://github.com/keras-team/keras-contrib/issues/488). After banging my head against the wall for a couple days, I decided to retrain the model but with Python 3.6.8, and Tensorflow 1.14.0.
-3. There was no problem during retraining but during conversion, another error occurred: 
-``` F tensorflow/lite/toco/import_tensorflow.cc:2619] Check failed: status.ok() Unexpected value for attribute 'data_format'. Expected 'NHWC'
-Fatal Python error: Aborted
-```
-As this point, I thought there was something wrong with how I built my model. So, I decided to consider Inception V3 transfer learning, which is what I'm currently using at the moment.
+3. There was no problem during retraining but during conversion but other errors kept appearing.
+
 
 ## Current Approach
+Considered using new approach with Inception V3 transfer learning, and made the last 178 layers trainable. According to [stratospark's Github](https://github.com/stratospark/food-101-keras), they had some success with this method on the Food-101 dataset. Thus, I thought it was worth considering. This is available in the `revised_transfer_learning.py` file. Some of the code structure is from 
 
 ## Considering to...
 
