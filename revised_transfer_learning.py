@@ -1,7 +1,9 @@
 '''
-Program used to train transfer learning model that uses Inception V3 and retrains the last 173 layers of the model to fit our dataset. This one runs on my lab's workstation, which has an NVIDIA GTX 1080 TI for GPU, as opposed to my 980. There is a substantial difference in time spent training between the GPUs.
-
+Program used to train transfer learning model that uses Inception V3 and retrains the last 173 layers of the model to fit the dataset. 
+This one runs on my lab's workstation, which has an NVIDIA GTX 1080 TI for GPU, as opposed to my GTX 980. 
+There is a substantial difference in time spent training between the GPUs.
 '''
+
 import os, sys
 #import matplotlib
 # matplotlib.use('agg')
@@ -52,6 +54,8 @@ def find_most_recent_model(directory):
 	count = len([1 for x in list(os.scandir(directory)) if x.is_file()])
 	return latest_file, count
 
+
+#removes all training history files from directory. used for resetting training. 
 def clean_directory(directory):
 	source = directory
 	for files in os.listdir(source):
@@ -63,7 +67,7 @@ def clean_directory(directory):
 			print(e)
 
 
-
+#transfer learning to adapt it to dataset classes
 def last_layer_insertion(base_model, num_classes):
 	x = base_model.output
 	x = GlobalAveragePooling2D()(x)
@@ -134,6 +138,7 @@ def main(args):
 
     model = last_layer_insertion(base_model, num_classes)
 
+
     for layer in model.layers[:172]:
     	layer.trainable = False
     for layer in model.layers[172:]:
@@ -150,6 +155,7 @@ def main(args):
 
     print("current epoch: {}".format(current_epoch_num))
 
+#if training history exists, load most recent weights
     if saved_model.endswith('.hdf5') and current_epoch_num != 0:
     	model = load_model(saved_model)
 
