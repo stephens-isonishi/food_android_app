@@ -46,6 +46,18 @@ FILEPATH = '/kw_resources/food/transfer_learning_training/'
 TRAIN_SIZE = 166580
 TEST_SIZE = 60990
 
+
+def find_directory_number(directory):
+    if len(os.listdir(directory)) == 0:
+        return str(0)
+    else:
+        dirs = os.listdir(directory)
+        dirs.sort()
+        print("sorted list: ", dirs)
+        return dirs[-1]
+
+
+
 def find_most_recent_model(directory):
 	if not os.listdir(directory):
 		return '', 0
@@ -53,7 +65,7 @@ def find_most_recent_model(directory):
 	latest_file = max(list_of_files, key=os.path.getctime) #get most recent file
 	count = len([1 for x in list(os.scandir(directory)) if x.is_file()])
 	return latest_file, count
-
+    #how to find proper directory, create directories 
 
 #removes all training history files from directory. used for resetting training. 
 def clean_directory(directory):
@@ -151,7 +163,12 @@ def main(args):
     if args.new_training:
     	print('deleting previous training history...')
     	clean_directory(FILEPATH)
-    saved_model, current_epoch_num = find_most_recent_model(FILEPATH)
+    training_number = find_directory_number(FILEPATH)
+    saved_model, current_epoch_num = find_most_recent_model(FILEPATH+training_number+'/')
+
+    SAVEPATH = FILEPATH + str(int(training_number)+1)+'/'
+    os.mkdir(SAVEPATH)
+
 
     print("current epoch: {}".format(current_epoch_num))
 
@@ -175,7 +192,7 @@ def main(args):
     	print('trained for {} epochs so far, {} more epochs to go...'.format(current_epoch_num, num_epochs_togo))
 
 
-    filepath = FILEPATH + "weights-{epoch:02d}-{val_acc:.4f}.hdf5"
+    filepath = SAVEPATH + "weights-{epoch:02d}-{val_acc:.4f}.hdf5"
     
     checkpoint = ModelCheckpoint(
     	filepath,
