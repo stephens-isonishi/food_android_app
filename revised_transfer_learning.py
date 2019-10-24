@@ -49,6 +49,7 @@ TEST_SIZE = 60990
 
 def find_directory_number(directory):
     if len(os.listdir(directory)) == 0:
+        os.mkdir(directory+'0/')
         return str(0)
     else:
         dirs = os.listdir(directory)
