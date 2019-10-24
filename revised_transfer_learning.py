@@ -64,9 +64,11 @@ def find_most_recent_model(directory):
         return '', 0
     list_of_files = glob.glob(directory + '*') #* means all 
     latest_file = max(list_of_files, key=os.path.getctime) #get most recent file
-    count = len([1 for x in list(os.scandir(directory)) if x.is_file()])
-    return latest_file, count
+    return latest_file
     #how to find proper directory, create directories 
+
+def total_epochs_sofar(directory):
+    return len([1 for x in list(os.scandir(directory)) if x.is_file()])
 
 #removes all training history files from directory. used for resetting training. 
 def clean_directory(directory):
@@ -167,7 +169,8 @@ def main(args):
     	print('deleting previous training history...')
     	clean_directory(FILEPATH)
     training_number = find_directory_number(FILEPATH)
-    saved_model, current_epoch_num = find_most_recent_model(FILEPATH+training_number+'/')
+    saved_model=find_most_recent_model(FILEPATH+training_number+'/')
+    current_epoch_num=total_epochs_sofar(FILEPATH)
 
     SAVEPATH = FILEPATH + str(int(training_number)+1)+'/'
     os.mkdir(SAVEPATH)
@@ -178,6 +181,7 @@ def main(args):
 #if training history exists, load most recent weights
     if saved_model.endswith('.hdf5') and current_epoch_num != 0:
     	model = load_model(saved_model)
+        print('model loaded from previous training')
 
 
     #try adam too...
