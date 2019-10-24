@@ -59,21 +59,21 @@ def find_directory_number(directory):
 
 
 def find_most_recent_model(directory):
-	if not os.listdir(directory):
-		return '', 0
-	list_of_files = glob.glob(directory + '*') #* means all 
-	latest_file = max(list_of_files, key=os.path.getctime) #get most recent file
-	count = len([1 for x in list(os.scandir(directory)) if x.is_file()])
-	return latest_file, count
+    if not os.listdir(directory):
+        return '', 0
+    list_of_files = glob.glob(directory + '*') #* means all 
+    latest_file = max(list_of_files, key=os.path.getctime) #get most recent file
+    count = len([1 for x in list(os.scandir(directory)) if x.is_file()])
+    return latest_file, count
     #how to find proper directory, create directories 
 
 #removes all training history files from directory. used for resetting training. 
 def clean_directory(directory):
-	source = directory
-	for files in os.listdir(source):
-		file_path = os.path.join(source, files)
+    source = directory
+    for files in os.listdir(source):
+        file_path = os.path.join(source, files)
 		#try:
-		if os.path.isfile(file_path):
+        if os.path.isfile(file_path):
             os.unlink(file_path)
         elif os.path.isdir(file_path):
             shutil.rmtree(file_path)
@@ -83,15 +83,15 @@ def clean_directory(directory):
 
 #transfer learning to adapt it to dataset classes
 def last_layer_insertion(base_model, num_classes):
-	x = base_model.output
-	x = GlobalAveragePooling2D()(x)
-	x = Dense(4096)(x)
-	x = BatchNormalization()(x)
-	x = Activation('relu')(x)
-	x = Dropout(.5)(x)
-	predictions = Dense(num_classes, activation='softmax')(x)
-	model = Model(input=base_model.input, output=predictions)
-	return model
+    x = base_model.output
+    x = GlobalAveragePooling2D()(x)
+    x = Dense(4096)(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = Dropout(.5)(x)
+    predictions = Dense(num_classes, activation='softmax')(x)
+    model = Model(input=base_model.input, output=predictions)
+    return model
 
 def main(args):
     print("started program...")
