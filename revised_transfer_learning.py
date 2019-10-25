@@ -157,9 +157,9 @@ def main(args):
 
 
     for layer in model.layers[:172]:
-    	layer.trainable = False
+        layer.trainable = False
     for layer in model.layers[172:]:
-    	layer.trainable = False
+        layer.trainable = False
 
 
 
@@ -180,7 +180,7 @@ def main(args):
 
 #if training history exists, load most recent weights
     if saved_model.endswith('.hdf5') and current_epoch_num != 0:
-    	model = load_model(saved_model)
+        model = load_model(saved_model)
         print('model loaded from previous training')
 
 
@@ -192,11 +192,11 @@ def main(args):
     print("compiled successfully...")
 
     if current_epoch_num > num_epochs:
-    	print('already trained for {} epochs'.format(current_epoch_num))
-    	exit()
+        print('already trained for {} epochs'.format(current_epoch_num))
+        exit()
     else:
-    	num_epochs_togo = num_epochs - current_epoch_num
-    	print('trained for {} epochs so far, {} more epochs to go...'.format(current_epoch_num, num_epochs_togo))
+        num_epochs_togo = num_epochs - current_epoch_num
+        print('trained for {} epochs so far, {} more epochs to go...'.format(current_epoch_num, num_epochs_togo))
 
 
     filepath = SAVEPATH + "weights-{epoch:02d}-{val_accuracy:.4f}.hdf5"
