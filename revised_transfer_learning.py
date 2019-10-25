@@ -38,9 +38,9 @@ NUM_CLASSES = 451
 TRAINING_DIR = '/kw_resources/food/dataset/training_data/'
 TESTING_DIR = '/kw_resources/food/dataset/testing_data/'
 FILEPATH = '/kw_resources/food/transfer_learning_training/'
-# FILEPATH = '../history_training/'
-# DIR1 = '../training_data/'
-# DIR2 = '../testing_data/'
+#FILEPATH = '../history_training/'
+#TRAINING_DIR = '../training_data/'
+#TESTING_DIR = '../testing_data/'
 
 #found using: find DIR_NAME -type f | wc -l       --from stack overflow
 TRAIN_SIZE = 166580
@@ -161,7 +161,7 @@ def main(args):
     for layer in model.layers[172:]:
         layer.trainable = False
 
-
+    print('model created...')
 
     num_files = 0
 
@@ -170,6 +170,8 @@ def main(args):
     	clean_directory(FILEPATH)
     training_number = find_directory_number(FILEPATH)
     saved_model=find_most_recent_model(FILEPATH+training_number+'/')
+    print(type(saved_model))
+    print(saved_model)
     current_epoch_num=total_epochs_sofar(FILEPATH)
 
     SAVEPATH = FILEPATH + str(int(training_number)+1)+'/'
@@ -179,7 +181,7 @@ def main(args):
     print("current epoch: {}".format(current_epoch_num))
 
 #if training history exists, load most recent weights
-    if saved_model.endswith('.hdf5') and current_epoch_num != 0:
+    if current_epoch_num != 0 and saved_model.endswith('.hdf5'): 
         model = load_model(saved_model)
         print('model loaded from previous training')
 
