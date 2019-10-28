@@ -68,7 +68,8 @@ def find_most_recent_model(directory):
     #how to find proper directory, create directories 
 
 def total_epochs_sofar(directory):
-    return len([1 for x in list(os.scandir(directory)) if x.is_file()])
+    #number of epochs so far is equivalent to number of weight files that already exist
+    return sum([len(files) for r,d, files in os.walk(directory)])
 
 #removes all training history files from directory. used for resetting training. 
 def clean_directory(directory):
