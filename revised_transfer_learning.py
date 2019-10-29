@@ -23,7 +23,7 @@ from keras.applications.inception_v3 import InceptionV3, preprocess_input
 from keras.models import Model, load_model
 from keras.layers import Dense, AveragePooling2D, GlobalAveragePooling2D, Input, Flatten, Dropout, Activation
 from keras.layers.normalization import BatchNormalization
-from keras.callbacks import ModelCheckpoint, CSVLogger
+from keras.callbacks import ModelCheckpoint, CSVLogger, LearningRateScheduler
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import SGD
 from keras.utils import multi_gpu_model
