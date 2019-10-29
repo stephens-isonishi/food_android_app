@@ -156,7 +156,7 @@ def main(args):
 
     model = last_layer_insertion(base_model, num_classes)
 
-    #stratospark had some success with almost "complete" transfer 
+    #some people had some success with almost "complete" transfer, try "complete" transfer 
     # for layer in model.layers[:172]:
     #     layer.trainable = False
     # for layer in model.layers[172:]:
@@ -213,6 +213,7 @@ def main(args):
     	save_weights_only=False,
     	mode='max')
 
+    #if using sgd optimizer, it's recommended to use a learning rate scheduler
     def schedule(epoch):
         if epoch < 15:
             return .01
