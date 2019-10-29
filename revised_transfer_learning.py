@@ -156,11 +156,11 @@ def main(args):
 
     model = last_layer_insertion(base_model, num_classes)
 
-
-    for layer in model.layers[:172]:
-        layer.trainable = False
-    for layer in model.layers[172:]:
-        layer.trainable = False
+    #stratospark had some success with almost "complete" transfer 
+    # for layer in model.layers[:172]:
+    #     layer.trainable = False
+    # for layer in model.layers[172:]:
+    #     layer.trainable = True
 
     print('model created...')
 
@@ -189,7 +189,7 @@ def main(args):
 
     #try adam too...
     model.compile(
-    	optimizer=SGD(lr=0.0001, momentum=0.9), 
+    	optimizer=SGD(lr=0.01, momentum=0.9), 
     	loss='categorical_crossentropy',
     	metrics=['accuracy'])
     print("compiled successfully...")
@@ -204,13 +204,31 @@ def main(args):
 
     filepath = SAVEPATH + "weights-{epoch:02d}-{val_accuracy:.4f}.hdf5"
     
+
     checkpoint = ModelCheckpoint(
     	filepath,
     	monitor='val_acc',
     	verbose=1,
-    	save_best_only=False,
+    	save_best_only=True,
     	save_weights_only=False,
     	mode='max')
+
+    def schedule(epoch):
+        if epoch < 15:
+            return .01
+        elif epoch < 25:
+            return .002
+        elif epoch < 35:
+            return .0004
+        elif epoch < 45:
+            return .00008
+        elif epoch < 55:
+            return .000016
+        else:
+            return .0000032
+    
+    learning_rate_schedule = LearningRateScheduler(schedule)
+
 
 
     model.fit_generator(
@@ -219,7 +237,7 @@ def main(args):
     	steps_per_epoch=(num_training // batch),
     	epochs=num_epochs,
     	validation_steps=(num_testing // batch),
-    	callbacks=[checkpoint],
+    	callbacks=[checkpoint, learning_rate_schedule],
     	verbose=1)
 
     print("done")
