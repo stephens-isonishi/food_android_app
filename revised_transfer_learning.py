@@ -49,8 +49,7 @@ TEST_SIZE = 60990
 
 def find_directory_number(directory):
     if len(os.listdir(directory)) == 0:
-        os.mkdir(directory+'0/')
-        return str(0)
+        return '0'
     else:
         dirs = os.listdir(directory)
         dirs.sort()
@@ -174,9 +173,10 @@ def main(args):
 
 
     training_number = find_directory_number(FILEPATH)
-    print('most recent directory: {}'.format(training_number))
-    saved_model=find_most_recent_model(FILEPATH+training_number+'/')
-    print(saved_model)
+    if training_number != '0':
+        print('most recent directory: {}'.format(training_number))
+        saved_model=find_most_recent_model(FILEPATH+training_number+'/')
+        print(saved_model)
     current_epoch_num=total_epochs_sofar(FILEPATH)
 
     SAVEPATH = FILEPATH + str(int(training_number)+1)+'/'
