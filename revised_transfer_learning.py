@@ -61,6 +61,7 @@ def find_directory_number(directory):
 
 def find_most_recent_model(directory):
     if not os.listdir(directory):
+        print('directory not found! : {}'.format(directory))
         return '', 0
     list_of_files = glob.glob(directory + '*') #* means all 
     latest_file = max(list_of_files, key=os.path.getctime) #get most recent file
@@ -163,11 +164,6 @@ def main(args):
     #     layer.trainable = True
 
 
-    local_devices = device_lib.list_local_devices()
-    num_gpus = len([dev.name for dev in local_devices if dev.device_type == 'GPU'])
-    print('number of gpus used: {}'.format(num_gpus))
-    if(num_gpus >= 2):
-        sn = multi_gpu_model(sn, num_gpus)
 
 
     if args.new_training:
@@ -176,6 +172,7 @@ def main(args):
 
 
     training_number = find_directory_number(FILEPATH)
+    print('training number: {}'.format(training_number))
     saved_model=find_most_recent_model(FILEPATH+training_number+'/')
     print(type(saved_model))
     print(saved_model)
@@ -192,6 +189,11 @@ def main(args):
         model = load_model(saved_model)
         print('model loaded from previous training')
 
+    local_devices = device_lib.list_local_devices()
+    num_gpus = len([dev.name for dev in local_devices if dev.device_type == 'GPU'])
+    print('number of gpus used: {}'.format(num_gpus))
+    if(num_gpus >= 2):
+        model = multi_gpu_model(model, num_gpus)
 
     #try adam too...
     model.compile(
