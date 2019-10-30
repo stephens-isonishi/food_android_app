@@ -60,9 +60,8 @@ def find_directory_number(directory):
 
 
 def find_most_recent_model(directory):
-    if not os.listdir(directory):
-        print('directory not found! : {}'.format(directory))
-        return '', 0
+    print('searching through {}'.format(directory))
+
     list_of_files = glob.glob(directory + '*') #* means all 
     latest_file = max(list_of_files, key=os.path.getctime) #get most recent file
     return latest_file
@@ -70,8 +69,11 @@ def find_most_recent_model(directory):
 
 def total_epochs_sofar(directory):
     #number of epochs so far is equivalent to number of weight files that already exist
-    return sum([len(files) for r,d, files in os.walk(directory)])
-
+   #-->should work return sum([len(files) for r,d, files in os.walk(directory)])
+    total = 0
+    for root, dirs, files in os.walk(folder):
+	total += len(files)
+    return total
 #removes all training history files from directory. used for resetting training. 
 def clean_directory(directory):
     source = directory
@@ -172,9 +174,8 @@ def main(args):
 
 
     training_number = find_directory_number(FILEPATH)
-    print('training number: {}'.format(training_number))
+    print('most recent directory: {}'.format(training_number))
     saved_model=find_most_recent_model(FILEPATH+training_number+'/')
-    print(type(saved_model))
     print(saved_model)
     current_epoch_num=total_epochs_sofar(FILEPATH)
 
