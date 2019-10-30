@@ -162,13 +162,19 @@ def main(args):
     # for layer in model.layers[172:]:
     #     layer.trainable = True
 
-    print('model created...')
 
-    num_files = 0
+    local_devices = device_lib.list_local_devices()
+    num_gpus = len([dev.name for dev in local_devices if dev.device_type == 'GPU'])
+    print('number of gpus used: {}'.format(num_gpus))
+    if(num_gpus >= 2):
+        sn = multi_gpu_model(sn, num_gpus)
+
 
     if args.new_training:
     	print('deleting previous training history...')
     	clean_directory(FILEPATH)
+
+
     training_number = find_directory_number(FILEPATH)
     saved_model=find_most_recent_model(FILEPATH+training_number+'/')
     print(type(saved_model))
