@@ -70,7 +70,7 @@ def total_epochs_sofar(directory):
     #number of epochs so far is equivalent to number of weight files that already exist
    #-->should work return sum([len(files) for r,d, files in os.walk(directory)])
     total = 0
-    for root, dirs, files in os.walk(folder):
+    for root, dirs, files in os.walk(directory):
         total += len(files)
     return total
 #removes all training history files from directory. used for resetting training. 
