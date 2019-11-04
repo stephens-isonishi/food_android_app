@@ -14,6 +14,7 @@ import datetime
 import platform
 import glob
 import shutil
+import tensorflow as tf
 
 # from IPython.display import display
 # from PIL import Image
@@ -35,12 +36,13 @@ from PIL import Image
 NUM_EPOCHS = 1
 BATCH_SIZE = 32
 NUM_CLASSES = 451
-TRAINING_DIR = '/kw_resources/food/dataset/training_data/'
-TESTING_DIR = '/kw_resources/food/dataset/testing_data/'
-FILEPATH = '/kw_resources/food/transfer_learning_training/'
-#FILEPATH = '../history_training/'
-#TRAINING_DIR = '../training_data/'
-#TESTING_DIR = '../testing_data/'
+
+#TRAINING_DIR = '/kw_resources/food/dataset/training_data/'
+#TESTING_DIR = '/kw_resources/food/dataset/testing_data/'
+#FILEPATH = '/kw_resources/food/transfer_learning_training/'
+FILEPATH = '../history_training/'
+TRAINING_DIR = '../training_data/'
+TESTING_DIR = '../testing_data/'
 
 #found using: find DIR_NAME -type f | wc -l       --from stack overflow
 TRAIN_SIZE = 166580
@@ -102,6 +104,8 @@ def last_layer_insertion(base_model, num_classes):
 def main(args):
     print("started program...")
     print(platform.python_version())
+
+    sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
 
     num_epochs = int(args.nb_epoch)
     batch = BATCH_SIZE
@@ -195,10 +199,10 @@ def main(args):
     # print('number of gpus used: {}'.format(num_gpus))
     # if(num_gpus >= 2):
     #     model = multi_gpu_model(model, num_gpus)
-    try:
-        model = multi_gpu_model(model, gpus=2)
-    except Exception as e:
-        print(e)
+    # try:
+    #     model = multi_gpu_model(model, gpus=2)
+    # except Exception as e:
+    #     print(e)
 
     #try adam too...
     model.compile(
@@ -215,7 +219,7 @@ def main(args):
         print('trained for {} epochs so far, {} more epochs to go...'.format(current_epoch_num, num_epochs_togo))
 
 
-    filepath = SAVEPATH + "weights-{epoch:02d}-{val_accuracy:.4f}.hdf5"
+    filepath = SAVEPATH + "weights-{epoch:02d}-{val_acc:.4f}.hdf5"
     
 
     checkpoint = ModelCheckpoint(
