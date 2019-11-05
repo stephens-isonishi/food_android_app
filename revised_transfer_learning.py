@@ -197,8 +197,8 @@ def main(args):
     # local_devices = device_lib.list_local_devices()
     # num_gpus = len([dev.name for dev in local_devices if dev.device_type == 'GPU'])
     # print('number of gpus used: {}'.format(num_gpus))
-    # if(num_gpus >= 2):
-    #     model = multi_gpu_model(model, num_gpus)
+    if(num_gpus >= 2):
+        model = multi_gpu_model(model, num_gpus)
     # try:
     #     model = multi_gpu_model(model, gpus=2)
     # except Exception as e:
