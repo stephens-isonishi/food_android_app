@@ -37,12 +37,12 @@ NUM_EPOCHS = 1
 BATCH_SIZE = 32
 NUM_CLASSES = 451
 
-#TRAINING_DIR = '/kw_resources/food/dataset/training_data/'
-#TESTING_DIR = '/kw_resources/food/dataset/testing_data/'
-#FILEPATH = '/kw_resources/food/transfer_learning_training/'
-FILEPATH = '../history_training/'
-TRAINING_DIR = '../training_data/'
-TESTING_DIR = '../testing_data/'
+TRAINING_DIR = '/kw_resources/food/dataset/training_data/'
+TESTING_DIR = '/kw_resources/food/dataset/testing_data/'
+FILEPATH = '/kw_resources/food/transfer_learning_training/'
+#FILEPATH = '../history_training/'
+#TRAINING_DIR = '../training_data/'
+#TESTING_DIR = '../testing_data/'
 
 #found using: find DIR_NAME -type f | wc -l       --from stack overflow
 TRAIN_SIZE = 166580
