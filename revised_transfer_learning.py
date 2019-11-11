@@ -10,7 +10,7 @@ import os, sys
 # import matplotlib.pyplot as plt
 import argparse
 import numpy as np
-import datetime
+from datetime import datetime
 import platform
 import glob
 import shutil
@@ -19,12 +19,13 @@ import tensorflow as tf
 # from IPython.display import display
 # from PIL import Image
 from keras import backend as K
+from keras import regularizers
 from keras import __version__
 from keras.applications.inception_v3 import InceptionV3, preprocess_input
 from keras.models import Model, load_model
 from keras.layers import Dense, AveragePooling2D, GlobalAveragePooling2D, Input, Flatten, Dropout, Activation
 from keras.layers.normalization import BatchNormalization
-from keras.callbacks import ModelCheckpoint, CSVLogger, LearningRateScheduler
+from keras.callbacks import ModelCheckpoint, CSVLogger, LearningRateScheduler, TensorBoard
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import SGD
 from keras.utils import multi_gpu_model
@@ -37,12 +38,12 @@ NUM_EPOCHS = 1
 BATCH_SIZE = 32
 NUM_CLASSES = 451
 
-TRAINING_DIR = '/kw_resources/food/dataset/training_data/'
-TESTING_DIR = '/kw_resources/food/dataset/testing_data/'
-FILEPATH = '/kw_resources/food/transfer_learning_training/'
-#FILEPATH = '../history_training/'
-#TRAINING_DIR = '../training_data/'
-#TESTING_DIR = '../testing_data/'
+#TRAINING_DIR = '/kw_resources/food/dataset/training_data/'
+#TESTING_DIR = '/kw_resources/food/dataset/testing_data/'
+#FILEPATH = '/kw_resources/food/transfer_learning_training/'
+FILEPATH = '../history_training/'
+TRAINING_DIR = '../training_data/'
+TESTING_DIR = '../testing_data/'
 
 #found using: find DIR_NAME -type f | wc -l       --from stack overflow
 TRAIN_SIZE = 166580
@@ -92,20 +93,24 @@ def clean_directory(directory):
 #transfer learning to adapt it to dataset classes
 def last_layer_insertion(base_model, num_classes):
     x = base_model.output
-    x = GlobalAveragePooling2D()(x)
-    x = Dense(4096)(x)
-    x = BatchNormalization()(x)
-    x = Activation('relu')(x)
-    x = Dropout(.5)(x)
-    predictions = Dense(num_classes, activation='softmax')(x)
+    x = AveragePooling2D(pool_size=(8,8))(x)
+    x = Dropout(0.4)(x)
+    x = Flatten()(x)
+    predictions = Dense(num_classes, kernel_initializer='glorot_uniform', kernel_regularizer=regularizers.l2(0.0005), activation='softmax')(x)
+    # x = GlobalAveragePooling2D()(x)
+    # x = Dense(4096)(x)
+    # x = BatchNormalization()(x)
+    # x = Activation('relu')(x)
+    # x = Dropout(.5)(x)
+    #predictions = Dense(num_classes, activation='softmax')(x)
     model = Model(input=base_model.input, output=predictions)
     return model
 
 def main(args):
-    print("started program...")
+    print("started program. python version:")
     print(platform.python_version())
 
-    sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
+    #sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
 
     num_epochs = int(args.nb_epoch)
     batch = BATCH_SIZE
@@ -199,16 +204,16 @@ def main(args):
     # print('number of gpus used: {}'.format(num_gpus))
     # if(num_gpus >= 2):
     #     model = multi_gpu_model(model, num_gpus)
-    try:
-        model = multi_gpu_model(model, gpus=2)
-    except Exception as e:
-        print(e)
+    # try:
+    #     model = multi_gpu_model(model, gpus=2)
+    # except Exception as e:
+    #     print(e)
 
     #try adam too...
     model.compile(
     	optimizer=SGD(lr=0.01, momentum=0.9), 
     	loss='categorical_crossentropy',
-    	metrics=['accuracy'])
+    	metrics=['acc'])
     print("compiled successfully...")
 
     if current_epoch_num > num_epochs:
@@ -219,16 +224,20 @@ def main(args):
         print('trained for {} epochs so far, {} more epochs to go...'.format(current_epoch_num, num_epochs_togo))
 
 
-    filepath = SAVEPATH + "weights-{epoch:02d}-{val_accuracy:.4f}.hdf5"
-    
-
+    #model checkpoint to save weights for each epoch
+    filepath = SAVEPATH + "weights-{epoch:02d}-{val_acc:.2f}.hdf5"
+    print("saving to filepath of " + filepath)
     checkpoint = ModelCheckpoint(
     	filepath,
     	monitor='val_acc',
     	verbose=1,
-    	save_best_only=True,
+    	save_best_only=False,
     	save_weights_only=False,
     	mode='max')
+
+    logdir = "../logs/" + datetime.now().strftime("%Y%m%d-%H%M%S")
+    tensorboard_callback = TensorBoard(log_dir=logdir)
+
 
     #if using sgd optimizer, it's recommended to use a learning rate scheduler
     def schedule(epoch):
@@ -255,7 +264,7 @@ def main(args):
     	steps_per_epoch=(num_training // batch),
     	epochs=num_epochs,
     	validation_steps=(num_testing // batch),
-    	callbacks=[checkpoint, learning_rate_schedule],
+    	callbacks=[tensorboard_callback, checkpoint, learning_rate_schedule],
     	verbose=1)
 
     print("done")
