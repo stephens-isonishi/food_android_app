@@ -11,7 +11,7 @@ def main(args):
 		exit(1)
 	converter = lite.TFLiteConverter.from_keras_model_file(file)
 	tflite_model = converter.convert()
-	open('graph.tflite','wb').write(tflite_model) #graph.lite not tflite
+	open('graph.lite','wb').write(tflite_model) #graph.lite not tflite
 	print('conversion successful!')
 
 
