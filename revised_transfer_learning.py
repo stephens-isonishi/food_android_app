@@ -93,8 +93,8 @@ def clean_directory(directory):
 #transfer learning to adapt it to dataset classes
 def last_layer_insertion(base_model, num_classes):
     x = base_model.output
-    x = AveragePooling2D(pool_size=(8,8))(x)
-    x = Dropout(0.4)(x)
+    x = AveragePooling2D(pool_size=(8,8))(x) #try different values of pool size and maxpooling
+    x = Dropout(0.4)(x) 
     x = Flatten()(x)
     predictions = Dense(num_classes, kernel_initializer='glorot_uniform', kernel_regularizer=regularizers.l2(0.0005), activation='softmax')(x)
     # x = GlobalAveragePooling2D()(x)
