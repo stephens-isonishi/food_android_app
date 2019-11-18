@@ -269,6 +269,11 @@ def main(args):
 
     print("done")
 
+'''
+result: 95% accuracy and 86% validation accuracy. decent enough to start.
+analysis and verification in validatingAndVisualization.py
+'''
+
 
 if __name__ == '__main__':
     args = argparse.ArgumentParser()
