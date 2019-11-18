@@ -38,7 +38,7 @@ def center_crop(image, center_crop_size):
     return image[centerw - halfw: centerw + halfw + 1, centerh - halfh: centerh + halfh + 1, :]
 
 
-def predict_crop(img, img_num, show_images=True, debugging=True):
+def predict_crop(img, img_num, show_images=True, debugging=True, model):
 
 
 	crops = [
@@ -57,6 +57,8 @@ def predict_crop(img, img_num, show_images=True, debugging=True):
 		axes[1][0].imshow(crops[3])
 		axes[1][1].imshow(crops[4])
 
+	y_preds = model.predict(np.array(crops))
+    print(y_preds)	
 
 	if debugging:
 		print('top 1 predictions:', preds)
