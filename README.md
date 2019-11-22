@@ -1,20 +1,22 @@
 # Food Classification Android App 
-Documentation on different approaches taken with An android app that can recognize food. Focus is more on the backend/model.
+Documentation on different approaches taken with an android app that can recognize food. Focus is more on the backend/model.
 
 ## Current status
-Model done. App not working properly. Looking at other app frameworks at the moment and considering building mostly from scratch.
+Model (available in [revised_transfer_learning](revised_transfer_learning.py)) done. App not working properly. Looking at other app frameworks at the moment and considering building mostly from scratch.
 Model achieved 97% accuracy with 86% validation accuracy. Further optimization may be possible, but is not a priority at the moment. 
 
 ## Summary/TL;DR
 Started with SqueezeNet Model, training went well (around 70% accuracy), but had lots of difficulty in converting the Keras file (h5 file) to a TF Lite file. Created a more successful Inception V3 transfer learning model with 97% accuracy. For the front-end, found the tutorial "Tensorflow for Poets 2" to be quite smooth and acceptable, replaced the graph.lite and labels.txt files with my own. After loading model, app shows very inaccurate results. Attempted to check if image from phone was getting cut off in conversion process using TextureView and Bitmap, but debugging was too time-consuming. Considering building from scratch.
 
-## Background
+## History
+
+### Background
 It would be useful to have an app that can recognize a variety of different foods through a smartphone app. The thought process was, find a food dataset, train a model on it, find an app framework, insert model on it, and voilà. 
 
-## Dataset
+### Dataset
 Found the largest dataset that seemed polished and professional--the [Food-475 Database](http://www.ivl.disco.unimib.it/activities/food475db/). Larger is better right? This database is actually a combination of four datasets that include: UECFOOD256, VIREO, Food-101, and Food-50. Of these, I needed to get permission from the administrator for the Food-101 dataset (a professor at a Chinese university). I had no problem downloading the train/test split spreadsheet, the UECFOOD256 dataset, VIREO, and Food-101, but I could not find any links for the Food-50 dataset. The Food-50 dataset was missing from a certain lab webpage of National Taiwan University which it should have been on. So, I decided to just skip the Food-50 dataset. This may introduce bias because the creators of the Food-475 dataset may have split the data into training and testing in a certain way. 
 
-## Model and Approach
+### Model and Approach
 According to papers such as [Hassannejad, Hamid, et al. "Food Image Recognition Using Very Deep Convolutional Networks." Proceedings of the 2nd International Workshop on Multimedia Assisted Dietary Management. ACM, 2016.](https://dl.acm.org/citation.cfm?id=2986042) and [NVIDIA DEEP LEARNING CONTEST 2016, Keun-dong Lee, DaUn Jeong, Seungjae Lee, Hyung Kwan Son (ETRI VisualBrowsing Team), Oct.7, 2016.](https://www.gputechconf.co.kr/assets/files/presentations/2-1650-1710_DL_Contest_%EC%A7%80%EC%A0%95%EC%A3%BC%EC%A0%9C_%EB%8C%80%EC%83%81.pdf), researchers were able to achieve around 90% accuracy on the Food-101 dataset with transfer learning models with Inception V3 and ResNet200. However, these papers never mention anything about mobile deployment so I decided to start off with a simple [SqueezeNet model](https://arxiv.org/pdf/1602.07360.pdf) which is a lightweight model that is suited for mobile development. 
 
 ### Training
@@ -27,9 +29,9 @@ The conversion from an h5 file to a tflite file should be straightforward, as ca
 3. There was no problem during retraining but during conversion other errors kept occurring.
 
 
-## Current Approach
+### Current Approach
 Considered using new approach with Inception V3 transfer learning, and made the last 178 layers trainable. According to [stratospark's Github](https://github.com/stratospark/food-101-keras), they had some success with this method on the Food-101 dataset. Thus, I thought it was worth considering. This is available in the [**revised_transfer_learning.py**](revised_transfer_learning.py) file, and is my main focus at the moment for this project. My initial thought process was to use numpy arrays and jotted out some [code](pretrained_reference/numpy_tl_reference.py) and I also used stratospark's code for Food-101 as [reference](pretrained_reference/stratospark_food101_reference.py).
 Currently training model...
 
-## App Framework
+### App Framework
 For the Android app, I wanted something lightweight and easy to quickly adopt and change for my case. Initially, I thought of using [Firebase](https://firebase.google.com/docs/android/setup) with the ["ML Kit for Firebase Quickstart"](https://github.com/firebase/quickstart-android/tree/master/mlkit) after reading someone's [blog](https://qiita.com/shinkoizumi0033/items/614e10c7db61ded3c212) (page is in **Japanese!**) documenting positive experince with it for building their binary image classifier Android app. However, after testing it with the Inception v3 transfer learning model that I have been trying to use, there was significant lag due to how it classifies objects through a video feed, instead of images. Thus, I decided to use the tutorial [*tensorflow for poets 2*](https://github.com/googlecodelabs/tensorflow-for-poets-2) and simply replaced the `graph.lite` file with the `.lite` file created from converting the Inception v3 transfer learning model. The `labels.txt` file was also easily replaced with my own. While this classified objects (in this case food) in real-time, there was significantly less lag than the previous framework with Firebase, and after looking at the Java code of the app in Android-Studio, it seems possible to "classify" every second or any time window, which may fit my situation better. The difference in speed between this tutorial app and the Firebase app is so significant while using the same model that this warrants further research and inspection of the code for both projects.
