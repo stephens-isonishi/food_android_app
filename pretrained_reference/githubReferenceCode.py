@@ -1,7 +1,7 @@
 
 '''
 used as reference material--general model structure in transfer learning
-unfortunately don't remember exact post on stackoverflow.
+unfortunately don't remember exact post on github.
 seems like this was from awhile ago judging tensorflow version to be 1.12.0
 
 '''
