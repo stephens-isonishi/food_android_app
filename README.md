@@ -1,8 +1,12 @@
 # Food Classification Android App 
-An android app that can recognize food. Focus is more on the backend/model.
+Documentation on different approaches taken with An android app that can recognize food. Focus is more on the backend/model.
+
+## Current status
+Model done. App not working properly. Looking at other app frameworks at the moment and considering building mostly from scratch.
+Model achieved 97% accuracy with 86% validation accuracy. Further optimization may be possible, but is not a priority at the moment. 
 
 ## Summary/TL;DR
-Started with SqueezeNet Model, training went well (around 70% accuracy), but had lots of difficulty in converting the Keras file (h5 file) to a TF Lite file. Currently working on Inception V3 transfer learning model. For the front-end, found the tutorial "Tensorflow for Poets 2" to be quite smooth and acceptable, and simply replaced the graph.lite and labels.txt files with my own.
+Started with SqueezeNet Model, training went well (around 70% accuracy), but had lots of difficulty in converting the Keras file (h5 file) to a TF Lite file. Created a more successful Inception V3 transfer learning model with 97% accuracy. For the front-end, found the tutorial "Tensorflow for Poets 2" to be quite smooth and acceptable, replaced the graph.lite and labels.txt files with my own. After loading model, app shows very inaccurate results. Attempted to check if image from phone was getting cut off in conversion process using TextureView and Bitmap, but debugging was too time-consuming. Considering building from scratch.
 
 ## Background
 It would be useful to have an app that can recognize a variety of different foods through a smartphone app. The thought process was, find a food dataset, train a model on it, find an app framework, insert model on it, and voilà. 
