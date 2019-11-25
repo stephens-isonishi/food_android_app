@@ -23,7 +23,7 @@ from keras import regularizers
 from keras import __version__
 from keras.applications.inception_v3 import InceptionV3, preprocess_input
 from keras.models import Model, load_model
-from keras.layers import Dense, AveragePooling2D, GlobalAveragePooling2D, Input, Flatten, Dropout, Activation
+from keras.layers import Dense, AveragePooling2D, GlobalAveragePooling2D, Input, Flatten, Dropout, Activation, MaxPooling2D
 from keras.layers.normalization import BatchNormalization
 from keras.callbacks import ModelCheckpoint, CSVLogger, LearningRateScheduler, TensorBoard
 from keras.preprocessing.image import ImageDataGenerator
@@ -50,6 +50,9 @@ TRAIN_SIZE = 166580
 TEST_SIZE = 60990
 
 
+
+##################################
+#initally these functions were used to continue training or resetting completely on workstation
 def find_directory_number(directory):
     if len(os.listdir(directory)) == 0:
         return '0'
@@ -58,8 +61,6 @@ def find_directory_number(directory):
         dirs.sort()
         print("sorted list: ", dirs)
         return dirs[-1]
-
-
 
 def find_most_recent_model(directory):
     print('searching through {}'.format(directory))
@@ -76,6 +77,7 @@ def total_epochs_sofar(directory):
     for root, dirs, files in os.walk(directory):
         total += len(files)
     return total
+
 #removes all training history files from directory. used for resetting training. 
 def clean_directory(directory):
     source = directory
@@ -88,13 +90,17 @@ def clean_directory(directory):
             shutil.rmtree(file_path)
 		#except Exception as e:
         #print(e)
+#####################################################
+
+
+
 
 
 #transfer learning to adapt it to dataset classes
-def last_layer_insertion(base_model, num_classes):
+def last_layer_insertion(base_model, num_classes): #aka top layers of transfer learning model
     x = base_model.output
-    x = AveragePooling2D(pool_size=(8,8))(x) #try different values of pool size and maxpooling
-    x = Dropout(0.4)(x) 
+    x = MaxPooling2D(pool_size=(8,8))(x) #try different values of pool size and maxpooling
+    x = Dropout(0.5)(x) 
     x = Flatten()(x)
     predictions = Dense(num_classes, kernel_initializer='glorot_uniform', kernel_regularizer=regularizers.l2(0.0005), activation='softmax')(x)
     # x = GlobalAveragePooling2D()(x)
@@ -110,14 +116,11 @@ def main(args):
     print("started program. python version:")
     print(platform.python_version())
 
-    #sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
 
     num_epochs = int(args.nb_epoch)
     batch = BATCH_SIZE
     num_classes = NUM_CLASSES
 
-    # training_dir = TRAINING_DIR
-    # testing_dir = TESTING_DIR
     training_dir = TRAINING_DIR
     testing_dir = TESTING_DIR
     num_training = TRAIN_SIZE
@@ -156,7 +159,8 @@ def main(args):
         testing_dir,
         target_size=(299,299),
         batch_size=batch,
-        class_mode='categorical')
+        shuffle=False,
+	class_mode='categorical')
 
 
 
@@ -173,32 +177,16 @@ def main(args):
     # for layer in model.layers[172:]:
     #     layer.trainable = True
 
-
-
-
-    if args.new_training:
+    if args.clean_reset:
     	print('deleting previous training history...')
     	clean_directory(FILEPATH)
 
 
     training_number = find_directory_number(FILEPATH)
-    if training_number != '0':
-        print('most recent directory: {}'.format(training_number))
-        saved_model=find_most_recent_model(FILEPATH+training_number+'/')
-        print(saved_model)
-    current_epoch_num=total_epochs_sofar(FILEPATH)
-
     SAVEPATH = FILEPATH + str(int(training_number)+1)+'/'
     os.mkdir(SAVEPATH)
-
-
-    print("current epoch: {}".format(current_epoch_num))
-
-#if training history exists, load most recent weights
-    if current_epoch_num != 0 and saved_model.endswith('.hdf5'): 
-        model = load_model(saved_model)
-        print('model loaded from previous training')
-
+    print('training number: ' + training_number)
+    ####### attempt at multi_gpu_model, care for some version incompatibility issue
     # local_devices = device_lib.list_local_devices()
     # num_gpus = len([dev.name for dev in local_devices if dev.device_type == 'GPU'])
     # print('number of gpus used: {}'.format(num_gpus))
@@ -215,14 +203,6 @@ def main(args):
     	loss='categorical_crossentropy',
     	metrics=['acc'])
     print("compiled successfully...")
-
-    if current_epoch_num > num_epochs:
-        print('already trained for {} epochs'.format(current_epoch_num))
-        exit()
-    else:
-        num_epochs_togo = num_epochs - current_epoch_num
-        print('trained for {} epochs so far, {} more epochs to go...'.format(current_epoch_num, num_epochs_togo))
-
 
     #model checkpoint to save weights for each epoch
     filepath = SAVEPATH + "weights-{epoch:02d}-{val_acc:.2f}.hdf5"
@@ -278,6 +258,6 @@ analysis and verification in validatingAndVisualization.py
 if __name__ == '__main__':
     args = argparse.ArgumentParser()
     args.add_argument("--nb_epoch", "-e", default=NUM_EPOCHS)
-    args.add_argument('--new_training', '-n', action='store_true')
+    args.add_argument('--clean_reset','-c', action='store_true')
     args = args.parse_args()
     main(args)
