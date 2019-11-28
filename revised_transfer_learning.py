@@ -97,18 +97,25 @@ def clean_directory(directory):
 
 
 #transfer learning to adapt it to dataset classes
+# tried so far:
+# --maxpooling2d with pool sizes of 4,4 and 8,8 with dropout of 0.5
+# --avgpooling2d with pool sizes of 8,8 with dropout 0.4
+# --avgpooling2d with pool sizes of 4,4 with no dropout layer
+# 
+# -results show that average pooling2d is superior to maxpooling2d by a significant amount
+# -between avgpooling2d and maxpooling2d, difference in validation accuracy is about .20
+# -eliminating dropout layer when using avgpooling2d had little effect on accuracy
+# ---this makes sense since dropout is used to prevent overfitting of large models but 
+# ---we have a lot of data in this case, and the results show no overfitting at all
+
+# currently trying average pooling2d 2,2 with no dropout and see if there's any difference
+
 def last_layer_insertion(base_model, num_classes): #aka top layers of transfer learning model
     x = base_model.output
-    x = MaxPooling2D(pool_size=(8,8))(x) #try different values of pool size and maxpooling
-    x = Dropout(0.5)(x) 
+    x = AveragePooling2D(pool_size=(2,2))(x) #try different values of pool size and maxpooling
+    # x = Dropout(0.5)(x) 
     x = Flatten()(x)
     predictions = Dense(num_classes, kernel_initializer='glorot_uniform', kernel_regularizer=regularizers.l2(0.0005), activation='softmax')(x)
-    # x = GlobalAveragePooling2D()(x)
-    # x = Dense(4096)(x)
-    # x = BatchNormalization()(x)
-    # x = Activation('relu')(x)
-    # x = Dropout(.5)(x)
-    #predictions = Dense(num_classes, activation='softmax')(x)
     model = Model(input=base_model.input, output=predictions)
     return model
 
