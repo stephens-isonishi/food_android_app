@@ -145,17 +145,7 @@ def main(args):
         shear_range=0.1,
         rescale=1./255)
 
-    test_datagen = ImageDataGenerator(
-        featurewise_center=False,
-        samplewise_center=False,
-        featurewise_std_normalization=False,
-        rotation_range=45,
-        width_shift_range=0.25,
-        height_shift_range=0.25,
-        horizontal_flip=True,
-        vertical_flip=False,
-        shear_range=0.1,
-        rescale=1./255)
+    test_datagen = ImageDataGenerator()
 
     train_generator = train_datagen.flow_from_directory(
         training_dir,
