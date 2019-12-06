@@ -16,6 +16,7 @@ import glob
 import shutil
 import tensorflow as tf
 
+
 # from IPython.display import display
 # from PIL import Image
 from keras import backend as K
@@ -38,9 +39,7 @@ NUM_EPOCHS = 1
 BATCH_SIZE = 32
 NUM_CLASSES = 451
 
-#TRAINING_DIR = '/kw_resources/food/dataset/training_data/'
-#TESTING_DIR = '/kw_resources/food/dataset/testing_data/'
-#FILEPATH = '/kw_resources/food/transfer_learning_training/'
+
 FILEPATH = '../history_training/'
 TRAINING_DIR = '../training_data/'
 TESTING_DIR = '../testing_data/'
@@ -244,6 +243,16 @@ def main(args):
     	callbacks=[tensorboard_callback, checkpoint, learning_rate_schedule],
     	verbose=1)
 
+
+
+    pred= model.predict_generator(test_generator, num_testing // batch)
+    predicted_class_indices=np.argmax(pred,axis=1)
+    labels = (test_generator.class_indices)
+    labels2 = dict((v,k) for k,v in labels.items())
+    predictions = [labels[k] for k in predicted_class_indices]
+    print(predicted_class_indices)
+    print (labels)
+    print (predictions)
     print("done")
 
 '''
