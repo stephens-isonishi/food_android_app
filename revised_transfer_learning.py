@@ -51,31 +51,18 @@ TEST_SIZE = 60990
 
 
 ##################################
-#initally these functions were used to continue training or resetting completely on workstation
 def find_directory_number(directory):
+    #return most recent directory number/experiment number by sorting and finding biggest one
     if len(os.listdir(directory)) == 0:
         return '0'
     else:
         dirs = os.listdir(directory)
-        dirs.sort()
-        print("sorted list: ", dirs)
-        return dirs[-1]
+        dirs_int = [int(x) for x in dirs]
+        dirs_int.sort()
+        print("sorted list: ", dirs_int)
+        return str(dirs_int[-1])
 
-def find_most_recent_model(directory):
-    print('searching through {}'.format(directory))
 
-    list_of_files = glob.glob(directory + '*') #* means all 
-    latest_file = max(list_of_files, key=os.path.getctime) #get most recent file
-    return latest_file
-    #how to find proper directory, create directories 
-
-def total_epochs_sofar(directory):
-    #number of epochs so far is equivalent to number of weight files that already exist
-   #-->should work return sum([len(files) for r,d, files in os.walk(directory)])
-    total = 0
-    for root, dirs, files in os.walk(directory):
-        total += len(files)
-    return total
 
 #removes all training history files from directory. used for resetting training. 
 def clean_directory(directory):
@@ -107,7 +94,6 @@ def clean_directory(directory):
 # -eliminating dropout layer when using avgpooling2d had little effect on accuracy
 # ---this makes sense since dropout is used to prevent overfitting of large models but 
 # ---we have a lot of data in this case, and the results show no overfitting at all
-
 
 def last_layer_insertion(base_model, num_classes): #aka top layers of transfer learning model
     x = base_model.output
@@ -167,38 +153,25 @@ def main(args):
 
     model = last_layer_insertion(base_model, num_classes)
 
-    #some people had some success with almost "complete" transfer, try "complete" transfer 
-    # for layer in model.layers[:172]:
-    #     layer.trainable = False
-    # for layer in model.layers[172:]:
-    #     layer.trainable = True
 
     if args.clean_reset:
     	print('deleting previous training history...')
     	clean_directory(FILEPATH)
 
 
+    #saving purposes. find most recent experiment and make new folder to save model in
     training_number = find_directory_number(FILEPATH)
     SAVEPATH = FILEPATH + str(int(training_number)+1)+'/'
     os.mkdir(SAVEPATH)
     print('training number: ' + training_number)
-    ####### attempt at multi_gpu_model, care for some version incompatibility issue
-    # local_devices = device_lib.list_local_devices()
-    # num_gpus = len([dev.name for dev in local_devices if dev.device_type == 'GPU'])
-    # print('number of gpus used: {}'.format(num_gpus))
-    # if(num_gpus >= 2):
-    #     model = multi_gpu_model(model, num_gpus)
-    # try:
-    #     model = multi_gpu_model(model, gpus=2)
-    # except Exception as e:
-    #     print(e)
 
-    #try adam too...
+
+    #model compilation
     model.compile(
     	optimizer=SGD(lr=0.01, momentum=0.9), 
     	loss='categorical_crossentropy',
     	metrics=['acc'])
-    print("compiled successfully...")
+
 
     #model checkpoint to save weights for each epoch
     filepath = SAVEPATH + "weights-{epoch:02d}-{val_acc:.2f}.hdf5"
@@ -211,6 +184,7 @@ def main(args):
     	save_weights_only=False,
     	mode='max')
 
+    #saving logs for tensorboard data
     logdir = "../logs/" + datetime.now().strftime("%Y%m%d-%H%M%S")
     tensorboard_callback = TensorBoard(log_dir=logdir)
 
@@ -244,15 +218,14 @@ def main(args):
     	verbose=1)
 
 
-
+    #used for checking confusion matrix and shuffling data.
+    #need to check if predict_generator can work without redoing training.
     pred= model.predict_generator(test_generator, num_testing // batch)
     predicted_class_indices=np.argmax(pred,axis=1)
     labels = (test_generator.class_indices)
     labels2 = dict((v,k) for k,v in labels.items())
-    predictions = [labels[k] for k in predicted_class_indices]
-    print(predicted_class_indices)
-    print (labels)
-    print (predictions)
+    predictions = [labels2[k] for k in predicted_class_indices]
+    print(confusion_matrix(predicted_class_indices, labels2))
     print("done")
 
 '''
