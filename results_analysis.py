@@ -31,6 +31,7 @@ from PIL import Image
 MODEL_FILE = '../history_training/7/weights-36-0.86.hdf5'
 BATCH = 32
 
+#testing generator used for training. 
 def testingGenerator(testing_dir, batch):
 	test_datagen = ImageDataGenerator(rescale=1./255)
 	test_generator = test_datagen.flow_from_directory(
@@ -40,11 +41,15 @@ def testingGenerator(testing_dir, batch):
         shuffle=False,
         class_mode='categorical')
 	return test_generator
+
+
 def main():
 	batch = BATCH
 	model = load_model(MODEL_FILE)
 	test_generator = testingGenerator('../testing_data/', batch)
 	labels_file = 'labels.txt'
-	
+    
+
+
 if __name__ == '__main__':
 	main()
