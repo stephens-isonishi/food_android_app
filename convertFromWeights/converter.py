@@ -6,9 +6,9 @@ import tensorflow.lite as lite
 def convert(filename):
 	converter = lite.TFLiteConverter.from_keras_model_file(filename)
 	tflite_model = converter.convert()
-	open('foodid_graph.lite','wb').write(tflite_model) 
+	open('../weight_files/foodid_graph.lite','wb').write(tflite_model) 
 
-def main(args):
+def main():
 	convert('../weight_files/weights-50-0.87.hdf5')
 
 
