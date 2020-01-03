@@ -1,11 +1,11 @@
-# Food Classification Android App 
-Documentation on different approaches taken with an android app that can recognize food. Focus is more on the backend/model.
+# Food Classification App Documentation and Training History
+Documentation on different approaches taken with an android app that can recognize food, actual app available in Food_id_app repository.
 
 ## Current status
-Model (available in [revised_transfer_learning](revised_transfer_learning.py)) done. App not working properly with the "Tensorflow for Poets 2" tutorial app framework. Looking at other app frameworks at the moment and considering building mostly from scratch.
+Finished. See Food_id_app repo for results.
 
 ## Summary/TL;DR
-Started with SqueezeNet Model, training went well (around 70% accuracy), but had lots of difficulty in converting the Keras file (h5 file) to a TF Lite file. Created a more successful Inception V3 transfer learning model with 97% accuracy. For the front-end, found the tutorial "Tensorflow for Poets 2" to be quite smooth and acceptable, replaced the graph.lite and labels.txt files with my own. After loading model, app shows very inaccurate results. Attempted to check if image from phone was getting cut off in conversion process using TextureView and Bitmap, but debugging was too time-consuming. Currently building app from scratch, inspired by [this post](https://android.jlelse.eu/the-least-you-can-do-with-camera2-api-2971c8c81b8b) that covers a lot of the key portions in an Android app that uses camera. Currently estimate app to be finished within 1 or 2 weeks.
+Started with SqueezeNet Model, training went well (around 70% accuracy), but had lots of difficulty in converting the Keras file (h5 file) to a TF Lite file. Created a more successful Inception V3 transfer learning model with 97% accuracy. For the front-end, found the tutorial "Tensorflow for Poets 2" to be quite smooth and acceptable, replaced the graph.lite and labels.txt files with my own. After loading model, app shows very inaccurate results. Attempted to check if image from phone was getting cut off in conversion process using TextureView and Bitmap, but debugging was too time-consuming. Built app from scratch, inspired by [this post](https://android.jlelse.eu/the-least-you-can-do-with-camera2-api-2971c8c81b8b) that covers a lot of the key portions in an Android app that uses camera. 
 
 
 ### Background
